@@ -1,9 +1,5 @@
 package metiers;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Abonnement {
     private int idAbonnement;
     private String formule;
