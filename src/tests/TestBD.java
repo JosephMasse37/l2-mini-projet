@@ -61,7 +61,7 @@ public class TestBD {
 		ResultSet rs = null;
 		try {
 			st = cn.createStatement();
-			String sqlQuery = "SELECT * FROM client";
+			String sqlQuery = "SELECT * FROM utilisateur";
 			rs = st.executeQuery(sqlQuery);
 		}
 		catch(SQLException e) {
@@ -74,7 +74,9 @@ public class TestBD {
 			while(rs.next()) {
 				String nom = rs.getString("nom");
 				String prenom = rs.getString("prenom");
-				System.out.println("Client : " + nom +" "+ prenom);
+				String password = rs.getString("password");
+				String username = rs.getString("username");
+				System.out.println("Client : " + nom +" "+ prenom + " MDP : " + password + " USERNAME : " + username);
 			}
 		}
 		catch(SQLException e) {
