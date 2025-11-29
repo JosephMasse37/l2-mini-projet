@@ -46,5 +46,9 @@ public class Utilisateur {
 
     public void setChauffeur(Chauffeur chauffeur) {
         this.chauffeur = chauffeur;
+
+        if (chauffeur.getUtilisateur() != this || chauffeur.getUtilisateur() == null) {
+            chauffeur.setUtilisateur(this);
+        }
     }
 }

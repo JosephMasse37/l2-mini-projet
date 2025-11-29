@@ -2,9 +2,34 @@ package metiers;
 
 public class Chauffeur {
     private int idChauffeur ;
-    private String nom;
-    private String prenom;
     private boolean formation_tram;
 
     private Utilisateur utilisateur;
+
+    public int getIdChauffeur() {
+        return idChauffeur;
+    }
+
+    public void setIdChauffeur(int idChauffeur) {
+        this.idChauffeur = idChauffeur;
+    }
+
+    public boolean isFormation_tram() {
+        return formation_tram;
+    }
+
+    public void setFormation_tram(boolean formation_tram) {
+        this.formation_tram = formation_tram;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+        if (utilisateur.getChauffeur() != this || utilisateur.getChauffeur() == null) {
+            utilisateur.setChauffeur(this);
+        }
+    }
 }

@@ -10,6 +10,7 @@ public class Arret {
     private double longitude;
 
     private List<Borne> listeBornes = new ArrayList<>();
+    private List<Ligne> listeLignesDesservies = new ArrayList<>();
 
     public int getIdArret() {
         return idArret;
@@ -51,7 +52,35 @@ public class Arret {
         this.listeBornes = listeBornes;
     }
 
+    public List<Ligne> getListeLignesDesservies() {
+        return listeLignesDesservies;
+    }
+
+    public void setListeLignesDesservies(List<Ligne> listeLignesDesservies) {
+        this.listeLignesDesservies = listeLignesDesservies;
+    }
+
     public void addBorne(Borne borne) {
         this.listeBornes.add(borne);
+    }
+
+    public void addLigneDesservie(Ligne uneLigne) {
+        this.listeLignesDesservies.add(uneLigne);
+        if (!uneLigne.estDesservi(this)) {
+            uneLigne.addArretDesservi(this);
+        }
+    }
+
+    public boolean estDesservi(Ligne uneLigne) {
+        boolean ligneDesservi = false;
+        int i = 0;
+
+        while (i<this.listeLignesDesservies.size() || !ligneDesservi) {
+            if (uneLigne.getIdLigne() == this.listeLignesDesservies.get(i).getIdLigne()) {
+                ligneDesservi = true;
+            }
+            i++;
+        }
+        return ligneDesservi;
     }
 }
