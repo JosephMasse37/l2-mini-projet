@@ -35,4 +35,9 @@ public class TypeLigne {
     public void addLigne(Ligne ligne){
         listeLignes.add(ligne);
     }
+
+    public TypeLigne(int idTypeLigne, String libelle) {
+        this.idTypeLigne = idTypeLigne;
+        this.libelle = libelle;
+    }
 }

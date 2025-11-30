@@ -49,4 +49,12 @@ public class ConduitSur {
     public void setNbValidation(int nbValidation) {
         this.nbValidation = nbValidation;
     }
+
+    public ConduitSur(Chauffeur leChauffeur, Ligne uneLigne, Vehicule unVehicule, LocalDateTime dateHeureConduite) {
+        this.leChauffeur = leChauffeur;
+        this.uneLigne = uneLigne;
+        this.unVehicule = unVehicule;
+        this.dateHeureConduite = dateHeureConduite;
+        this.nbValidation = 0;
+    }
 }

@@ -81,5 +81,20 @@ public class Ligne {
         }
         return arretDesservi;
     }
+
+    public Ligne(String libelle, TypeLigne typeLigne, int idLigne) {
+        this.libelle = libelle;
+        this.typeLigne = typeLigne;
+        this.idLigne = idLigne;
+    }
+
+    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive, List<Arret> arretsDesservis) {
+        this.idLigne = idLigne;
+        this.libelle = libelle;
+        this.typeLigne = typeLigne;
+        this.arretDepart = arretDepart;
+        this.arretArrive = arretArrive;
+        this.arretsDesservis = arretsDesservis;
+    }
 }
 

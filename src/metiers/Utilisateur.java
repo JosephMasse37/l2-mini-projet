@@ -5,7 +5,7 @@ public class Utilisateur {
     private String password;
     private String prenom;
     private String nom;
-// pr FK
+    // pr FK
     private Chauffeur chauffeur;
 
     public String getUsername() {
@@ -50,5 +50,20 @@ public class Utilisateur {
         if (chauffeur.getUtilisateur() != this || chauffeur.getUtilisateur() == null) {
             chauffeur.setUtilisateur(this);
         }
+    }
+
+    public Utilisateur(String nom, String username, String password, String prenom) {
+        this.nom = nom;
+        this.username = username;
+        this.password = password;
+        this.prenom = prenom;
+    }
+
+    public Utilisateur(String username, String password, String prenom, String nom, Chauffeur chauffeur) {
+        this.username = username;
+        this.password = password;
+        this.prenom = prenom;
+        this.nom = nom;
+        this.chauffeur = chauffeur;
     }
 }
