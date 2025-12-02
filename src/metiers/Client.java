@@ -47,4 +47,19 @@ public class Client {
         this.unAbonnement = unAbonnement;
         unAbonnement.addClient(this);
     }
+
+    public Client(int idClient, String nom, String prenom, int age) {
+        this.idClient = idClient;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.age = age; 
+    }
+
+    public Client(int idClient, String nom, String prenom, int age, Abonnement unAbonnement) {
+        this.idClient = idClient;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.age = age;
+        this.unAbonnement = unAbonnement;
+    }
 }

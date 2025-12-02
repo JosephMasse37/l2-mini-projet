@@ -32,4 +32,10 @@ public class Chauffeur {
             utilisateur.setChauffeur(this);
         }
     }
+
+    public Chauffeur(int idChauffeur, boolean formation_tram, Utilisateur utilisateur) {
+        this.idChauffeur = idChauffeur;
+        this.formation_tram = formation_tram;
+        this.utilisateur = utilisateur;
+    }
 }

@@ -55,4 +55,12 @@ public class Abonnement {
     public void addClient(Client client) {
         this.listeClients.add(client);
     }
+
+    public Abonnement(int idAbonnement, String formule, LocalDate dateDebut, double prix, List<Client> listeClients) {
+        this.idAbonnement = idAbonnement;
+        this.formule = formule;
+        this.dateDebut = dateDebut;
+        this.prix = prix;
+        this.listeClients = listeClients;
+    }
 }
