@@ -7,8 +7,7 @@ public class TypeVehicule {
 
     private int idTypeVehicule;
     private String libelle;
-//car n
-    private List<Vehicule> listeVehicules = new ArrayList<>();
+    private List<Vehicule> listeVehicules = new ArrayList<>(); //car n
 
     public int getIdTypeVehicule() {
         return idTypeVehicule;
@@ -36,9 +35,24 @@ public class TypeVehicule {
     }
 
     public void addVehicule(Vehicule vehicule){
-        listeVehicules.add(vehicule);
+        if (!listeVehicules.contains(vehicule)) {
+            listeVehicules.add(vehicule);
+            vehicule.setTypevehicule(this); // pour que ca soit bidirectionnelle
+        }
     }
 
+    public TypeVehicule(){}
+
+    public TypeVehicule(int idTypeVehicule,String libelle, List<Vehicule> listeVehicules ){
+        this.idTypeVehicule=idTypeVehicule;
+        this.libelle=libelle;
+        this.listeVehicules=listeVehicules;
+    }
+
+    public TypeVehicule(String libelle, List<Vehicule> listeVehicules ){
+        this.libelle=libelle;
+        this.listeVehicules=listeVehicules;
+    }
 
 
 

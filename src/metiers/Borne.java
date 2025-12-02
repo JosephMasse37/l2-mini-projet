@@ -3,7 +3,7 @@ package metiers;
 public class Borne {
     private int idBorne;
     private int nbVoyageVendu;
-    private int getNbVentesTickets;
+    private int nbVentesTickets;
 
     private Arret arret;
 
@@ -23,12 +23,12 @@ public class Borne {
         this.nbVoyageVendu = nbVoyageVendu;
     }
 
-    public int getGetNbVentesTickets() {
-        return getNbVentesTickets;
+    public int getNbVentesTickets() {
+        return nbVentesTickets;
     }
 
-    public void setGetNbVentesTickets(int getNbVentesTickets) {
-        this.getNbVentesTickets = getNbVentesTickets;
+    public void setNbVentesTickets(int NbVentesTickets) {
+        this.nbVentesTickets = NbVentesTickets;
     }
 
     public Arret getArret() {
@@ -39,4 +39,20 @@ public class Borne {
         this.arret = arret;
         arret.addBorne(this);
     }
+
+    public Borne(){}
+
+    public Borne(int idBorne,int nbVoyageVendu,int NbVentesTickets){
+        this.idBorne=idBorne;
+        this.nbVoyageVendu=nbVoyageVendu;
+        this.nbVentesTickets=NbVentesTickets;
+    }
+
+    public Borne(int nbVoyageVendu,int NbVentesTickets){
+        this.nbVoyageVendu=nbVoyageVendu;
+        this.nbVentesTickets=NbVentesTickets;
+    }
+
+
+
 }
