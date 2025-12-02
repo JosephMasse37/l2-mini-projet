@@ -70,4 +70,27 @@ public class Vehicule {
         // PAS OUBLIER
         typevehicule.addVehicule(this); // add un vehic dans le type aussi
     }
+
+    public Vehicule(){}
+
+    public Vehicule( int numVehicule,String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance,TypeVehicule typevehicule){
+        this.numVehicule=numVehicule;
+        this.marque=marque;
+        this.modele=modele;
+        this.dateFabrication=dateFabrication;
+        this.dateMiseEnService=dateMiseEnService;
+        this.dateHeureDerniereMaintenance=dateHeureDerniereMaintenance;
+        setTypevehicule(typevehicule); // pour que Vehicule et Typevehic soit synchro
+    }
+
+    public Vehicule(String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance,TypeVehicule typevehicule){
+        this.marque=marque;
+        this.modele=modele;
+        this.dateFabrication=dateFabrication;
+        this.dateMiseEnService=dateMiseEnService;
+        this.dateHeureDerniereMaintenance=dateHeureDerniereMaintenance;
+        setTypevehicule(typevehicule); // pour que Vehicule et Typevehic soit synchro
+    }
+
+
 }

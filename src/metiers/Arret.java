@@ -71,7 +71,7 @@ public class Arret {
         }
     }
 
-    public boolean estDesservi(Ligne uneLigne) {
+   /* public boolean estDesservi(Ligne uneLigne) {
         boolean ligneDesservi = false;
         int i = 0;
 
@@ -82,5 +82,28 @@ public class Arret {
             i++;
         }
         return ligneDesservi;
+    }*/
+
+    public boolean estDesservi(Ligne uneLigne) {
+        return this.listeLignesDesservies
+                .stream()
+                .anyMatch(ligne -> ligne.getIdLigne() == uneLigne.getIdLigne());
     }
+
+    public Arret(int idArret, String nom, double latitude, double longitude) {
+        this.idArret = idArret;
+        this.nom = nom;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+        // sans id car deja autoincrement + pour le insert mieux pour jdbc
+      public Arret(String nom, double latitude, double longitude) {
+        this.nom = nom;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Arret() {}
+
+
 }
