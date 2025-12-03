@@ -41,7 +41,6 @@ public class TypeVehicule {
         }
     }
 
-    public TypeVehicule(){}
 
     public TypeVehicule(int idTypeVehicule,String libelle, List<Vehicule> listeVehicules ){
         this.idTypeVehicule=idTypeVehicule;

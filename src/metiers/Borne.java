@@ -40,8 +40,6 @@ public class Borne {
         arret.addBorne(this);
     }
 
-    public Borne(){}
-
     public Borne(int idBorne,int nbVoyageVendu,int NbVentesTickets){
         this.idBorne=idBorne;
         this.nbVoyageVendu=nbVoyageVendu;
