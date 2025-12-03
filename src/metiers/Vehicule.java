@@ -71,8 +71,6 @@ public class Vehicule {
         typevehicule.addVehicule(this); // add un vehic dans le type aussi
     }
 
-    public Vehicule(){}
-
     public Vehicule( int numVehicule,String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance,TypeVehicule typevehicule){
         this.numVehicule=numVehicule;
         this.marque=marque;

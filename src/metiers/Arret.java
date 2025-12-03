@@ -103,7 +103,5 @@ public class Arret {
         this.longitude = longitude;
     }
 
-    public Arret() {}
-
 
 }
