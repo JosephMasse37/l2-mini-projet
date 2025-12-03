@@ -82,15 +82,4 @@ public class Vehicule {
         this.dateHeureDerniereMaintenance=dateHeureDerniereMaintenance;
         setTypevehicule(typevehicule); // pour que Vehicule et Typevehic soit synchro
     }
-
-    public Vehicule(String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance,TypeVehicule typevehicule){
-        this.marque=marque;
-        this.modele=modele;
-        this.dateFabrication=dateFabrication;
-        this.dateMiseEnService=dateMiseEnService;
-        this.dateHeureDerniereMaintenance=dateHeureDerniereMaintenance;
-        setTypevehicule(typevehicule); // pour que Vehicule et Typevehic soit synchro
-    }
-
-
 }
