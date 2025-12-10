@@ -6,9 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Connexion {
-    private Connection instanceConnexion = null;
+    private static Connection instanceConnexion = null;
 
-    public Connection getConnexion() {
+    public static Connection getConnexion() {
         if (instanceConnexion == null) {
             String databaseName = "bd_gestbus";
             // Parametres de connexion : url, login, mdp
