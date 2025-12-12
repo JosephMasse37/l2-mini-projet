@@ -28,7 +28,6 @@ public class UtilisateurDAO {
                 String prenom = rs.getString("prenom");
                 String password_ = rs.getString("password");
                 String username_ = rs.getString("username");
-                System.out.println("Client : " + nom + " " + prenom + " MDP : " + password_ + " USERNAME : " + username_);
 
                 return new Utilisateur(username_, password_, prenom, nom);
             }

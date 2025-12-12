@@ -69,6 +69,7 @@ public class ConduitSurDAO {
                 int idLigne = rs.getInt("idLigne");
                 int numVehicule = rs.getInt("numVehicule");
                 String dateHeureConduiteString = rs.getString("dateHeureConduite");
+                int nbValidation = rs.getInt("nbValidation");
                 LocalDateTime dateHeureConduite = LocalDateTime.parse(dateHeureConduiteString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
                 System.out.println("numVehicule : " + numVehicule + " | IdLigne : " + idLigne + " | idChauffeur : " + idChauffeur +
@@ -79,7 +80,7 @@ public class ConduitSurDAO {
                 Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
                 Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
 
-                listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite));
+                listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation));
             }
         } catch (SQLException e) {
             System.err.println("Erreur requête SQL");
@@ -105,6 +106,7 @@ public class ConduitSurDAO {
             while (rs.next()) {
                 int numVehicule = rs.getInt("numVehicule");
                 int idChauffeur = rs.getInt("idChauffeur");
+                int nbValidation = rs.getInt("nbValidation");
                 String dateHeureConduiteString = rs.getString("dateHeureConduite");
                 LocalDateTime dateHeureConduite = LocalDateTime.parse(dateHeureConduiteString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -116,7 +118,7 @@ public class ConduitSurDAO {
                 Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
                 Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
 
-                listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite));
+                listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation));
             }
         } catch (SQLException e) {
             System.err.println("Erreur requête SQL");
@@ -141,6 +143,7 @@ public class ConduitSurDAO {
             rs = st.executeQuery(req);
 
             while (rs.next()) {
+                int nbValidation = rs.getInt("nbValidation");
                 String dateHeureConduiteString = rs.getString("dateHeureConduite");
                 LocalDateTime dateHeureConduite = LocalDateTime.parse(dateHeureConduiteString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -152,7 +155,7 @@ public class ConduitSurDAO {
                 Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
                 Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
 
-                listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite));
+                listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation));
             }
         } catch (SQLException e) {
             System.err.println("Erreur requête SQL");
@@ -160,5 +163,43 @@ public class ConduitSurDAO {
         }
 
         return listeConduites;
+    }
+
+    public static ConduitSur getUneConduite(int idChauffeur, int idLigne, int numVehicule, LocalDateTime dateHeureConduite) {
+        Connection cn = Connexion.getConnexion();
+
+        List<ConduitSur> listeConduites = new ArrayList<>();
+
+        // Execution de requetes
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            String dateHeureConduiteString = dateHeureConduite.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+            st = cn.createStatement();
+            String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur " +
+                    "WHERE idChauffeur = " + idChauffeur + " AND idLigne = " + idLigne + " AND numVehicule = " + numVehicule +
+                    " AND dateHeureConduite = '" + dateHeureConduiteString + "';";
+            rs = st.executeQuery(req);
+
+            while (rs.next()) {
+                int nbValidation = rs.getInt("nbValidation");
+
+                System.out.println("numVehicule : " + numVehicule + " | IdLigne : " + idLigne + " | idChauffeur : " + idChauffeur +
+                        " | dateHeureConduite : " + dateHeureConduite);
+
+                // Récupération des autres objets pour construire l'objet
+                Ligne laLigne = LigneDAO.getUneLigne(idLigne);
+                Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
+                Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
+
+                return new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur requête SQL");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
