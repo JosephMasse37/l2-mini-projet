@@ -63,7 +63,6 @@ public class ArretDAO extends DAO<Arret> {
 
                 if (rs.next()) {
 
-                    // 3. Lecture des données et construction de l'objet Arret
                     String nom = rs.getString("nom");
                     double latitude = rs.getDouble("latitude");
                     double longitude = rs.getDouble("longitude");
