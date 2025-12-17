@@ -21,7 +21,7 @@ public class TypeLigneDAO extends DAO<TypeLigne> {
         super(connexion);
     }
 
-    // creer nv arret
+    // creer nv 
     public TypeLigne create(TypeLigne uneTypeLigne) throws DAOException {
         String query = "INSERT INTO TypeLigne (libelle) VALUES (?)";
 
