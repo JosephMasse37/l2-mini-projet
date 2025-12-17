@@ -23,7 +23,7 @@ import metiers.TypeLigne;
             super(connexion);
         }
 
-        // creer nv arret
+        // creer nv 
         public Ligne create(Ligne uneLigne) throws DAOException {
             String query = "INSERT INTO ligne (libelle,typeLigne, arretDepart, arretArrive) VALUES (?,?,?,?)";
 
