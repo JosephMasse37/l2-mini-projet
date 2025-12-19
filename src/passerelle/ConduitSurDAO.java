@@ -14,9 +14,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConduitSurDAO {
-    public static List<ConduitSur> getConduiteUnVehicule(int numVehicule) {
-        Connection cn = Connexion.getConnexion();
+public class ConduitSurDAO extends DAO<ConduitSur> {
+
+    public ConduitSurDAO(Connection connexion) {
+        super(connexion);
+    }
+
+    public List<ConduitSur> getConduiteUnVehicule(int numVehicule) throws DAOException {
 
         List<ConduitSur> listeConduites = new ArrayList<>();
 
@@ -24,7 +28,7 @@ public class ConduitSurDAO {
         Statement st = null;
         ResultSet rs = null;
         try {
-            st = cn.createStatement();
+            st = connexion.createStatement();
             String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur WHERE numVehicule = " + numVehicule + ";";
             rs = st.executeQuery(req);
 
@@ -37,10 +41,15 @@ public class ConduitSurDAO {
                 System.out.println("numVehicule : " + numVehicule + " | IdLigne : " + idLigne + " | idChauffeur : " + idChauffeur +
                         " | dateHeureConduite : " + dateHeureConduite);
 
+                // Récupération des DAOs
+                LigneDAO ligneDAO = new LigneDAO(connexion);
+                ChauffeurDAO chauffeurDAO = ChauffeurDAO(connexion);
+                VehiculeDAO vehiculeDAO = VehiculeDAO(connexion);
+
                 // Récupération des autres objets pour construire l'objet
-                Ligne laLigne = LigneDAO.getUneLigne(idLigne);
-                Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
-                Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
+                Ligne laLigne = ligneDAO.find(idLigne);
+                Chauffeur leChauffeur = chauffeurDAO.find(idChauffeur);
+                Vehicule unVehicule = vehiculeDAO.find(numVehicule);
 
                 listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite));
             }
@@ -52,7 +61,7 @@ public class ConduitSurDAO {
         return listeConduites;
     }
 
-    public static List<ConduitSur> getConduiteUnChauffeur(int idChauffeur) {
+    public List<ConduitSur> getConduiteUnChauffeur(int idChauffeur) throws DAOException {
         Connection cn = Connexion.getConnexion();
 
         List<ConduitSur> listeConduites = new ArrayList<>();
@@ -75,10 +84,15 @@ public class ConduitSurDAO {
                 System.out.println("numVehicule : " + numVehicule + " | IdLigne : " + idLigne + " | idChauffeur : " + idChauffeur +
                         " | dateHeureConduite : " + dateHeureConduite);
 
+                // Récupération des DAOs
+                LigneDAO ligneDAO = new LigneDAO(connexion);
+                ChauffeurDAO chauffeurDAO = ChauffeurDAO(connexion);
+                VehiculeDAO vehiculeDAO = VehiculeDAO(connexion);
+
                 // Récupération des autres objets pour construire l'objet
-                Ligne laLigne = LigneDAO.getUneLigne(idLigne);
-                Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
-                Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
+                Ligne laLigne = ligneDAO.find(idLigne);
+                Chauffeur leChauffeur = chauffeurDAO.find(idChauffeur);
+                Vehicule unVehicule = vehiculeDAO.find(numVehicule);
 
                 listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation));
             }
@@ -90,7 +104,7 @@ public class ConduitSurDAO {
         return listeConduites;
     }
 
-    public static List<ConduitSur> getConduiteUneLigne(int idLigne) {
+    public List<ConduitSur> getConduiteUneLigne(int idLigne) throws DAOException {
         Connection cn = Connexion.getConnexion();
 
         List<ConduitSur> listeConduites = new ArrayList<>();
@@ -113,10 +127,15 @@ public class ConduitSurDAO {
                 System.out.println("numVehicule : " + numVehicule + " | IdLigne : " + idLigne + " | idChauffeur : " + idChauffeur +
                         " | dateHeureConduite : " + dateHeureConduite);
 
+                // Récupération des DAOs
+                LigneDAO ligneDAO = new LigneDAO(connexion);
+                ChauffeurDAO chauffeurDAO = ChauffeurDAO(connexion);
+                VehiculeDAO vehiculeDAO = VehiculeDAO(connexion);
+
                 // Récupération des autres objets pour construire l'objet
-                Ligne laLigne = LigneDAO.getUneLigne(idLigne);
-                Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
-                Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
+                Ligne laLigne = ligneDAO.find(idLigne);
+                Chauffeur leChauffeur = chauffeurDAO.find(idChauffeur);
+                Vehicule unVehicule = vehiculeDAO.find(numVehicule);
 
                 listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation));
             }
@@ -128,7 +147,7 @@ public class ConduitSurDAO {
         return listeConduites;
     }
 
-    public static List<ConduitSur> getConduitesUnChauffeurUneLigneUnVehicule(int idChauffeur, int idLigne, int numVehicule) {
+    public List<ConduitSur> getConduitesUnChauffeurUneLigneUnVehicule(int idChauffeur, int idLigne, int numVehicule) throws DAOException {
         Connection cn = Connexion.getConnexion();
 
         List<ConduitSur> listeConduites = new ArrayList<>();
@@ -150,10 +169,15 @@ public class ConduitSurDAO {
                 System.out.println("numVehicule : " + numVehicule + " | IdLigne : " + idLigne + " | idChauffeur : " + idChauffeur +
                         " | dateHeureConduite : " + dateHeureConduite);
 
+                // Récupération des DAOs
+                LigneDAO ligneDAO = new LigneDAO(connexion);
+                ChauffeurDAO chauffeurDAO = ChauffeurDAO(connexion);
+                VehiculeDAO vehiculeDAO = VehiculeDAO(connexion);
+
                 // Récupération des autres objets pour construire l'objet
-                Ligne laLigne = LigneDAO.getUneLigne(idLigne);
-                Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
-                Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
+                Ligne laLigne = ligneDAO.find(idLigne);
+                Chauffeur leChauffeur = chauffeurDAO.find(idChauffeur);
+                Vehicule unVehicule = vehiculeDAO.find(numVehicule);
 
                 listeConduites.add(new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation));
             }
@@ -165,7 +189,22 @@ public class ConduitSurDAO {
         return listeConduites;
     }
 
-    public static ConduitSur getUneConduite(int idChauffeur, int idLigne, int numVehicule, LocalDateTime dateHeureConduite) {
+    @Override
+    public ConduitSur find(int id) throws DAOException {
+        throw new DAOException("Non utilisé");
+    }
+
+    @Override
+    public ConduitSur find(int id1, int id2) throws DAOException {
+        throw new DAOException("Non utilisé");
+    }
+
+    @Override
+    public ConduitSur find(int id1, int id2, int id3) throws DAOException {
+        throw new DAOException("Non utilisé");
+    }
+
+    public ConduitSur find(int idChauffeur, int idLigne, int numVehicule, LocalDateTime dateHeureConduite) throws DAOException {
         Connection cn = Connexion.getConnexion();
 
         List<ConduitSur> listeConduites = new ArrayList<>();
@@ -188,10 +227,15 @@ public class ConduitSurDAO {
                 System.out.println("numVehicule : " + numVehicule + " | IdLigne : " + idLigne + " | idChauffeur : " + idChauffeur +
                         " | dateHeureConduite : " + dateHeureConduite);
 
+                // Récupération des DAOs
+                LigneDAO ligneDAO = new LigneDAO(connexion);
+                ChauffeurDAO chauffeurDAO = ChauffeurDAO(connexion);
+                VehiculeDAO vehiculeDAO = VehiculeDAO(connexion);
+
                 // Récupération des autres objets pour construire l'objet
-                Ligne laLigne = LigneDAO.getUneLigne(idLigne);
-                Chauffeur leChauffeur = ChauffeurDAO.getUnChauffeur(idChauffeur);
-                Vehicule unVehicule = VehiculeDAO.getUnVehicule(numVehicule);
+                Ligne laLigne = ligneDAO.find(idLigne);
+                Chauffeur leChauffeur = chauffeurDAO.find(idChauffeur);
+                Vehicule unVehicule = vehiculeDAO.find(numVehicule);
 
                 return new ConduitSur(leChauffeur, laLigne, unVehicule, dateHeureConduite, nbValidation);
             }
@@ -201,5 +245,25 @@ public class ConduitSurDAO {
         }
 
         return null;
+    }
+
+    @Override
+    public ConduitSur create(ConduitSur object) throws DAOException {
+        return null;
+    }
+
+    @Override
+    public boolean update(ConduitSur object) throws DAOException {
+        return false;
+    }
+
+    @Override
+    public boolean delete(ConduitSur object) throws DAOException {
+        return false;
+    }
+
+    @Override
+    public List<ConduitSur> findAll() throws DAOException {
+        return List.of();
     }
 }
