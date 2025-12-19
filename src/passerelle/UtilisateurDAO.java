@@ -136,7 +136,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("Erreur lors de la mise à jour de l'arrêt avec ID : " + utilisateur.getUsername(), e);
+            throw new DAOException("Erreur lors de la mise à jour de l'utilisateur avec ID : " + utilisateur.getUsername(), e);
         }
     }
 
