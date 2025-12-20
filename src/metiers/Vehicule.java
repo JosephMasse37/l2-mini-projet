@@ -1,7 +1,6 @@
 package metiers;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Vehicule {
     private int numVehicule;
@@ -9,7 +8,7 @@ public class Vehicule {
     private String modele;
     private LocalDate dateFabrication;
     private LocalDate dateMiseEnService;
-    private LocalDateTime dateHeureDerniereMaintenance;
+    private LocalDate dateHeureDerniereMaintenance;
 // pour co (FK genre)
     private TypeVehicule typevehicule;
 
@@ -53,11 +52,11 @@ public class Vehicule {
         this.dateMiseEnService = dateMiseEnService;
     }
 
-    public LocalDateTime getDateHeureDerniereMaintenance() {
+    public LocalDate getDateHeureDerniereMaintenance() {
         return dateHeureDerniereMaintenance;
     }
 
-    public void setDateHeureDerniereMaintenance(LocalDateTime dateHeureDerniereMaintenance) {
+    public void setDateHeureDerniereMaintenance(LocalDate dateHeureDerniereMaintenance) {
         this.dateHeureDerniereMaintenance = dateHeureDerniereMaintenance;
     }
 
@@ -71,7 +70,7 @@ public class Vehicule {
         typevehicule.addVehicule(this); // add un vehic dans le type aussi
     }
 
-    public Vehicule( int numVehicule,String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance,TypeVehicule typevehicule){
+    public Vehicule( int numVehicule,String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDate dateHeureDerniereMaintenance,TypeVehicule typevehicule){
         this.numVehicule=numVehicule;
         this.marque=marque;
         this.modele=modele;

@@ -34,6 +34,12 @@ public abstract class DAO<T> {
     //Find an object by its ID in the database and return it
     public abstract T find(int id) throws DAOException;
 
+    //Find utilisé par DessertDAO
+    public abstract T find(int id1, int id2) throws DAOException;
+
+    //Find utilisé par ConduitSurDAO
+    public abstract T find(int id1, int id2, int id3) throws DAOException;
+
     //Update an existing object in the database
     public abstract boolean update(T object) throws DAOException;
 
