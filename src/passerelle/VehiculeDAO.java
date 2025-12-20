@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
             ps.setString(3, vehicule.getModele());
             ps.setDate(4, java.sql.Date.valueOf(vehicule.getDateFabrication()));
             ps.setDate(5, java.sql.Date.valueOf(vehicule.getDateMiseEnService()));
-            ps.setDate(6, java.sql.Date.valueOf(vehicule.getDateHeureDerniereMaintenance()));
+            ps.setTimestamp(6, java.sql.Timestamp.valueOf(vehicule.getDateHeureDerniereMaintenance()));
             ps.setInt(7, vehicule.getTypevehicule().getIdTypeVehicule());
 
             int lignesModifiees = ps.executeUpdate();
@@ -69,7 +70,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
                     String modele = rs.getString("modele");
                     LocalDate dateFabrication = rs.getDate("dateFabrication").toLocalDate();
                     LocalDate dateMiseEnService = rs.getDate("dateMiseEnService").toLocalDate();
-                    LocalDate dateHeureDerniereMaintenance = rs.getDate("dateHeureDerniereMaintenance").toLocalDate();
+                    LocalDateTime dateHeureDerniereMaintenance = rs.getTimestamp("dateHeureDerniereMaintenance").toLocalDateTime();
                     TypeVehicule typeVehicule = typeVehiculeDAO.find(rs.getInt("idTypeVehicule"));
 
                     return new Vehicule(numVehicule, marque, modele, dateFabrication, dateMiseEnService, dateHeureDerniereMaintenance, typeVehicule);
@@ -93,7 +94,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
             ps.setString(2, vehicule.getModele());
             ps.setDate(3, java.sql.Date.valueOf(vehicule.getDateFabrication()));
             ps.setDate(4, java.sql.Date.valueOf(vehicule.getDateMiseEnService()));
-            ps.setDate(5, java.sql.Date.valueOf(vehicule.getDateHeureDerniereMaintenance()));
+            ps.setTimestamp(5, java.sql.Timestamp.valueOf(vehicule.getDateHeureDerniereMaintenance()));
             ps.setInt(6, vehicule.getTypevehicule().getIdTypeVehicule());
             ps.setInt(7, vehicule.getNumVehicule());
 
@@ -148,7 +149,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
                 String modele = rs.getString("modele");
                 LocalDate dateFabrication = rs.getDate("dateFabrication").toLocalDate();
                 LocalDate dateMiseEnService = rs.getDate("dateMiseEnService").toLocalDate();
-                LocalDate dateHeureDerniereMaintenance = rs.getDate("dateHeureDerniereMaintenance").toLocalDate();
+                LocalDateTime dateHeureDerniereMaintenance = rs.getTimestamp("dateHeureDerniereMaintenance").toLocalDateTime();
                 TypeVehicule idTypeVehicule = typeVehiculeDAO.find(rs.getInt("idTypeVehicule"));
 
                 
