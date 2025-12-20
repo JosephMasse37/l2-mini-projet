@@ -16,7 +16,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
     public Utilisateur getUnUtilisateur(String username, String password, boolean hashed) throws DAOException {
         String hashedPassword = "";
 
-        if (hashed) {
+        if (!hashed) {
             // Hachage du mot de passe avec SHA-256
             hashedPassword = Hashing.digest(password);
         }
@@ -28,7 +28,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
         try {
             try(PreparedStatement ps = connexion.prepareStatement(req)) {
                 ps.setString(1, username);
-                if (hashed) {
+                if (!hashed) {
                     ps.setString(2, hashedPassword);
                 } else {
                     ps.setString(2, password);
