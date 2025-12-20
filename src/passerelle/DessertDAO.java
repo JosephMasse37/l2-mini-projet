@@ -18,66 +18,60 @@ public class DessertDAO extends DAO<Dessert> {
         List<Arret> listesArretsDesservis = new ArrayList<>();
 
         // Execution de requetes
-        Statement st = null;
+        String req = "SELECT idLigne, idArret FROM dessert WHERE idLigne = ?";
+
         ResultSet rs = null;
         try {
-            st = connexion.createStatement();
-            String req = "SELECT idLigne, idArret FROM dessert WHERE idLigne = " + idLigne + ";";
-            rs = st.executeQuery(req);
+            try(PreparedStatement ps = connexion.prepareStatement(req)) {
+                ps.setInt(1, idLigne);
 
-            while (rs.next()) {
-                int idArret = rs.getInt("idArret");
+                rs = ps.executeQuery();
 
-                System.out.println("idLigne : " + idLigne + " | idArret : " + idArret);
+                while (rs.next()) {
+                    int idArret = rs.getInt("idArret");
 
-                // Récupération des autres objets pour construire l'objet
-                ArretDAO arretDAO = new ArretDAO(connexion);
-                Arret lArret = arretDAO.find(idArret);
+                    // Récupération des DAOs
+                    ArretDAO arretDAO = new ArretDAO(connexion);
 
-                listesArretsDesservis.add(lArret);
+                    listesArretsDesservis.add(arretDAO.find(idArret));
+                }
             }
-
-            return listesArretsDesservis;
-
         } catch (SQLException e) {
             System.err.println("Erreur requête SQL");
             e.printStackTrace();
         }
 
-        return new ArrayList<>();
+        return listesArretsDesservis;
     }
 
     public List<Ligne> getDessertesUnArret(int idArret) throws DAOException {
         List<Ligne> listesLignesDesservies = new ArrayList<>();
 
         // Execution de requetes
-        Statement st = null;
+        String req = "SELECT idLigne, idArret FROM dessert WHERE idArret = ?";
+
         ResultSet rs = null;
         try {
-            st = connexion.createStatement();
-            String req = "SELECT idLigne, idArret FROM dessert WHERE idArret = " + idArret + ";";
-            rs = st.executeQuery(req);
+            try(PreparedStatement ps = connexion.prepareStatement(req)) {
+                ps.setInt(1, idArret);
 
-            while (rs.next()) {
-                int idLigne = rs.getInt("idLigne");
+                rs = ps.executeQuery();
 
-                System.out.println("idLigne : " + idLigne + " | idArret : " + idArret);
+                while (rs.next()) {
+                    int idLigne = rs.getInt("idLigne");
 
-                // Récupération des autres objets pour construire l'objet
-                LigneDAO ligneDAO = new LigneDAO(connexion);
-                Ligne laLigne = ligneDAO.find(idLigne);
+                    // Récupération des DAOs
+                    LigneDAO ligneDAO = new LigneDAO(connexion);
 
-                listesLignesDesservies.add(laLigne);
+                    listesLignesDesservies.add(ligneDAO.find(idLigne));
+                }
             }
-
-            return listesLignesDesservies;
-
         } catch (SQLException e) {
             System.err.println("Erreur requête SQL");
             e.printStackTrace();
         }
 
-        return new ArrayList<>();
+        return listesLignesDesservies;
     }
 
     @Override
@@ -88,7 +82,7 @@ public class DessertDAO extends DAO<Dessert> {
     @Override
     public Dessert find(int idArret, int idLigne) throws DAOException {
         // Execution de requetes
-        String req = "SELECT idArret, idLigne FROM dessert WHERE idArret = ? AND idLigne = ? ;";
+        String req = "SELECT idArret, idLigne FROM dessert WHERE idArret = ? AND idLigne = ?";
 
         ResultSet rs = null;
         try {
