@@ -1,25 +1,7 @@
-package passerelle;
 
+package passerelle;
 import java.sql.Connection;
 import java.util.List;
-
-/*Generic abstract DAO class for managing data access.
-
-JDBC Resource Management
-For every JDBC operation, always use the try-with-resources pattern to
-ensure the automatic closing of PreparedStatement and ResultSet resources:
-
-try (PreparedStatement ps = connexion.prepareStatement(sql)) {
-    ps.setInt(1, id);
-    try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-            // traiter le résultat
-        }
-    }
-  } catch (SQLException e) {
-      throw new DAOException("Message d'erreur", e);
-  }
-}*/
 
 public abstract class DAO<T> {
     protected Connection connexion;
@@ -33,6 +15,12 @@ public abstract class DAO<T> {
 
     //Find an object by its ID in the database and return it
     public abstract T find(int id) throws DAOException;
+
+    //Find utilisé par DessertDAO
+    public abstract T find(int id1, int id2) throws DAOException;
+
+    //Find utilisé par ConduitSurDAO
+    public abstract T find(int id1, int id2, int id3) throws DAOException;
 
     //Update an existing object in the database
     public abstract boolean update(T object) throws DAOException;

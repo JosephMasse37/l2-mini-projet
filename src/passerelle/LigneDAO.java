@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import metiers.Arret;
+import metiers.Borne;
 import metiers.Ligne;
 import metiers.TypeLigne;
 
@@ -187,5 +188,15 @@ import metiers.TypeLigne;
             return lignes;
         }
 
+
+        @Override
+        public Ligne find(int id1, int id2) throws DAOException {
+            throw new DAOException("Non utilisé");
+        }
+
+        @Override
+        public Ligne find(int id1, int id2, int id3) throws DAOException {
+            throw new DAOException("Non utilisé");
+        }
     }
 

@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
+import metiers.Borne;
 import metiers.TypeLigne;
 
 
@@ -54,7 +55,8 @@ public class TypeLigneDAO extends DAO<TypeLigne> {
 
     public TypeLigne find(int idTypeLigne) throws DAOException {
 
-        String query = "SELECT idTypeLigne, libelle FROM TypeLigne WHERE idTypeLigne = ?";            try (PreparedStatement ps = connexion.prepareStatement(query)) {
+        String query = "SELECT idTypeLigne, libelle FROM TypeLigne WHERE idTypeLigne = ?";
+        try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
             ps.setInt(1, idTypeLigne);
 
@@ -140,6 +142,15 @@ public class TypeLigneDAO extends DAO<TypeLigne> {
         }
     }
 
+    @Override
+    public TypeLigne find(int id1, int id2) throws DAOException {
+        throw new DAOException("Non utilisé");
+    }
+
+    @Override
+    public TypeLigne find(int id1, int id2, int id3) throws DAOException {
+        throw new DAOException("Non utilisé");
+    }
 
 }
 

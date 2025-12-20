@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
+
+import metiers.Arret;
 import metiers.Borne;
 
 //CRUD
@@ -145,6 +147,15 @@ import metiers.Borne;
             }
         }
 
+        @Override
+        public Borne find(int id1, int id2) throws DAOException {
+            throw new DAOException("Non utilisé");
+        }
+
+        @Override
+        public Borne find(int id1, int id2, int id3) throws DAOException {
+            throw new DAOException("Non utilisé");
+        }
 
     }
 

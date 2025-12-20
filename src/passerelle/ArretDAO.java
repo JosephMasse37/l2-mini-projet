@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 import metiers.Arret;
+import metiers.Chauffeur;
 
 //CRUD
 
@@ -179,6 +180,16 @@ public class ArretDAO extends DAO<Arret> {
         }
 
         return arretsTrouves;
+    }
+
+    @Override
+    public Arret find(int id1, int id2) throws DAOException {
+        throw new DAOException("Non utilisé");
+    }
+
+    @Override
+    public Arret find(int id1, int id2, int id3) throws DAOException {
+        throw new DAOException("Non utilisé");
     }
 }
 
