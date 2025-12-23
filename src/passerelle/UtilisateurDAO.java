@@ -22,7 +22,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
         }
 
         // Execution de requetes
-        String req = "SELECT username, prenom, nom, username, password FROM utilisateur WHERE username = ? AND password = ? ;";
+        String req = "SELECT username, password, prenom, nom FROM utilisateur WHERE username = ? AND password = ? ;";
 
         ResultSet rs = null;
         try {
@@ -33,6 +33,33 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
                 } else {
                     ps.setString(2, password);
                 }
+
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    String nom = rs.getString("nom");
+                    String prenom = rs.getString("prenom");
+                    String password_ = rs.getString("password");
+                    String username_ = rs.getString("username");
+
+                    return new Utilisateur(username_, password_, prenom, nom);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur requête SQL");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Utilisateur find(String username) throws DAOException {
+        String req = "SELECT username, password, prenom, nom FROM utilisateur WHERE username = ?";
+
+        ResultSet rs = null;
+        try {
+            try(PreparedStatement ps = connexion.prepareStatement(req)) {
+                ps.setString(1, username);
 
                 rs = ps.executeQuery();
 
