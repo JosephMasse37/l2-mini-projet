@@ -13,7 +13,6 @@ import metiers.Tram;
 import metiers.TypeVehicule;
 import metiers.Vehicule;
 
-//test push
 public class VehiculeDAO extends DAO<Vehicule> {
 
     public VehiculeDAO(Connection connexion) {
@@ -22,7 +21,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
 
     @Override
     public Vehicule create(Vehicule vehicule) throws DAOException {
-        String query = "INSERT INTO vehicule (numVehicule, marque, modele, dateFabrication, dateMiseEnService, dateHeureDerniereMaintenance, idTypeVehicule) VALUES (?, ?, ?)";
+        String query = "INSERT INTO vehicule (numVehicule, marque, modele, dateFabrication, dateMiseEnService, dateHeureDerniereMaintenance, idTypeVehicule) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connexion.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
