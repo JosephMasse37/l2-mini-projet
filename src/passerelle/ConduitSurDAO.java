@@ -56,15 +56,13 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
     }
 
     public List<ConduitSur> getConduiteUnChauffeur(int idChauffeur) throws DAOException {
-        Connection cn = Connexion.getConnexion();
-
         List<ConduitSur> listeConduites = new ArrayList<>();
 
         // Execution de requetes
         Statement st = null;
         ResultSet rs = null;
         try {
-            st = cn.createStatement();
+            st = connexion.createStatement();
             String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur WHERE idChauffeur = " + idChauffeur + ";";
             rs = st.executeQuery(req);
 
@@ -99,15 +97,13 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
     }
 
     public List<ConduitSur> getConduiteUneLigne(int idLigne) throws DAOException {
-        Connection cn = Connexion.getConnexion();
-
         List<ConduitSur> listeConduites = new ArrayList<>();
 
         // Execution de requetes
         Statement st = null;
         ResultSet rs = null;
         try {
-            st = cn.createStatement();
+            st = connexion.createStatement();
             String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur WHERE idLigne = " + idLigne + ";";
             rs = st.executeQuery(req);
 
@@ -142,15 +138,13 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
     }
 
     public List<ConduitSur> getConduitesUnChauffeurUneLigneUnVehicule(int idChauffeur, int idLigne, int numVehicule) throws DAOException {
-        Connection cn = Connexion.getConnexion();
-
         List<ConduitSur> listeConduites = new ArrayList<>();
 
         // Execution de requetes
         Statement st = null;
         ResultSet rs = null;
         try {
-            st = cn.createStatement();
+            st = connexion.createStatement();
             String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur " +
                     "WHERE idChauffeur = ?" + idChauffeur + " AND idLigne = " + idLigne + " AND numVehicule = " + numVehicule + ";";
             rs = st.executeQuery(req);
@@ -199,7 +193,6 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
     }
 
     public ConduitSur find(int idChauffeur, int idLigne, int numVehicule, LocalDateTime dateHeureConduite) throws DAOException {
-        Connection cn = Connexion.getConnexion();
 
         // Execution de requetes
         Statement st = null;
@@ -207,7 +200,7 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
         try {
             String dateHeureConduiteString = dateHeureConduite.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-            st = cn.createStatement();
+            st = connexion.createStatement();
             String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur " +
                     "WHERE idChauffeur = " + idChauffeur + " AND idLigne = " + idLigne + " AND numVehicule = " + numVehicule +
                     " AND dateHeureConduite = '" + dateHeureConduiteString + "';";
