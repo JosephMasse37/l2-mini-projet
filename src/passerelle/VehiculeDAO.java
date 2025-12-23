@@ -23,7 +23,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
     public Vehicule create(Vehicule vehicule) throws DAOException {
         String query = "INSERT INTO vehicule (numVehicule, marque, modele, dateFabrication, dateMiseEnService, dateHeureDerniereMaintenance, idTypeVehicule) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement ps = connexion.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
             ps.setInt(1, vehicule.getNumVehicule());
             ps.setString(2, vehicule.getMarque());
@@ -153,7 +153,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
     public List<Vehicule> findAll() throws DAOException {
         List<Vehicule> vehicules = new ArrayList<>();
         Vehicule vehicule = null;
-        String query = "SELECT v.* FROM vehicule v, t.libelle as typeLibelle " +
+        String query = "SELECT v.* , t.libelle as typeLibelle FROM vehicule v " +
                        "JOIN typeVehicule t ON v.idTypeVehicule = t.idTypeVehicule";
 
         // try-with-ressources to auto-close resources (ps and rs)
