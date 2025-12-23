@@ -1,7 +1,25 @@
-
 package passerelle;
+
 import java.sql.Connection;
 import java.util.List;
+
+/*Generic abstract DAO class for managing data access.
+
+JDBC Resource Management
+For every JDBC operation, always use the try-with-resources pattern to
+ensure the automatic closing of PreparedStatement and ResultSet resources:
+
+try (PreparedStatement ps = connexion.prepareStatement(sql)) {
+    ps.setInt(1, id);
+    try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+            // traiter le résultat
+        }
+    }
+  } catch (SQLException e) {
+      throw new DAOException("Message d'erreur", e);
+  }
+}*/
 
 public abstract class DAO<T> {
     protected Connection connexion;

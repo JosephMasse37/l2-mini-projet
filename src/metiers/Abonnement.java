@@ -1,14 +1,13 @@
 package metiers;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Abonnement {
     private int idAbonnement;
     private String formule;
-    private LocalDate dateDebut;
     private double prix;
+    private String duree;
 
     private List<Client> listeClients = new ArrayList<>();
 
@@ -28,12 +27,12 @@ public class Abonnement {
         this.formule = formule;
     }
 
-    public LocalDate getDateDebut() {
-        return dateDebut;
+    public String getDuree() {
+        return duree;
     }
 
-    public void setDateDebut(LocalDate dateDebut) {
-        this.dateDebut = dateDebut;
+    public void setDuree(String duree) {
+        this.duree = duree;
     }
 
     public double getPrix() {
@@ -56,11 +55,19 @@ public class Abonnement {
         this.listeClients.add(client);
     }
 
-    public Abonnement(int idAbonnement, String formule, LocalDate dateDebut, double prix, List<Client> listeClients) {
+    public Abonnement(int idAbonnement, String formule, double prix, String duree, List<Client> listeClients) {
         this.idAbonnement = idAbonnement;
         this.formule = formule;
-        this.dateDebut = dateDebut;
+        this.duree = duree;;
         this.prix = prix;
         this.listeClients = listeClients;
+    }
+
+    public Abonnement(int idAbonnement, String formule, double prix, String duree) {
+        this.idAbonnement = idAbonnement;
+        this.formule = formule;
+        this.duree = duree;
+        this.prix = prix;
+        this.listeClients = new ArrayList<>();
     }
 }

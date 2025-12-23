@@ -3,7 +3,7 @@ package metiers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Vehicule {
+public abstract class Vehicule {
     private int numVehicule;
     private String marque;
     private String modele;
@@ -69,6 +69,16 @@ public class Vehicule {
         this.typevehicule = typevehicule;
         // PAS OUBLIER
         typevehicule.addVehicule(this); // add un vehic dans le type aussi
+    }
+
+    public Vehicule( int numVehicule,String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance){
+        this.numVehicule=numVehicule;
+        this.marque=marque;
+        this.modele=modele;
+        this.dateFabrication=dateFabrication;
+        this.dateMiseEnService=dateMiseEnService;
+        this.dateHeureDerniereMaintenance=dateHeureDerniereMaintenance;
+        setTypevehicule(typevehicule); // pour que Vehicule et Typevehic soit synchro
     }
 
     public Vehicule( int numVehicule,String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance,TypeVehicule typevehicule){
