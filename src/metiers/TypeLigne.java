@@ -40,4 +40,10 @@ public class TypeLigne {
         this.idTypeLigne = idTypeLigne;
         this.libelle = libelle;
     }
+    //pr le insert
+    public TypeLigne( String libelle) {
+        this.libelle = libelle;
+    }
+
+
 }

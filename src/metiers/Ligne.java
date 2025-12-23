@@ -96,5 +96,22 @@ public class Ligne {
         this.arretArrive = arretArrive;
         this.arretsDesservis = arretsDesservis;
     }
+
+//pr insert
+    public Ligne( String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive) {
+        this.libelle = libelle;
+        this.typeLigne = typeLigne;
+        this.arretDepart = arretDepart;
+        this.arretArrive = arretArrive;
+    }
+
+    //pr find
+    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive) {
+        this.idLigne=idLigne;
+        this.libelle = libelle;
+        this.typeLigne = typeLigne;
+        this.arretDepart = arretDepart;
+        this.arretArrive = arretArrive;
+    }
 }
 
