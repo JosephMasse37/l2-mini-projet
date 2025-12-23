@@ -57,4 +57,17 @@ public class ConduitSur {
         this.dateHeureConduite = dateHeureConduite;
         this.nbValidation = 0;
     }
+
+    public ConduitSur(Chauffeur leChauffeur, Ligne uneLigne, Vehicule unVehicule, LocalDateTime dateHeureConduite, int nbValidation) {
+        this.leChauffeur = leChauffeur;
+        this.uneLigne = uneLigne;
+        this.unVehicule = unVehicule;
+        this.dateHeureConduite = dateHeureConduite;
+        this.nbValidation = nbValidation;
+    }
+
+    @Override
+    public String toString() {
+        return "Ligne = " + uneLigne.getLibelle() + " Chauffeur = " + leChauffeur.getUtilisateur().getUsername() + " Véhicule : " + unVehicule.getNumVehicule() + " dateHeureConduite : " + dateHeureConduite;
+    }
 }

@@ -52,7 +52,7 @@ public class Utilisateur {
         }
     }
 
-    public Utilisateur(String nom, String username, String password, String prenom) {
+    public Utilisateur(String username, String password, String prenom, String nom) {
         this.nom = nom;
         this.username = username;
         this.password = password;
@@ -65,5 +65,10 @@ public class Utilisateur {
         this.prenom = prenom;
         this.nom = nom;
         this.chauffeur = chauffeur;
+    }
+
+    @Override
+    public String toString() {
+        return "USERNAME " + username + " | Identité : " + prenom + " " + nom;
     }
 }
