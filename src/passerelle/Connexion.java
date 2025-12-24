@@ -34,4 +34,17 @@ public class Connexion {
 
         return instanceConnexion;
     }
+    public static void close() throws DAOException {
+        if (instanceConnexion != null) {
+            try {
+                if (!instanceConnexion.isClosed()) {
+                    instanceConnexion.close();
+                }
+            } catch (SQLException e) {
+                throw new DAOException("Erreur lors de la fermeture de la connexion", e);
+            } finally {
+                instanceConnexion = null;
+            }
+        }
+    }
 }
