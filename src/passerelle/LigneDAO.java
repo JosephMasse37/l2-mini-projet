@@ -25,7 +25,7 @@ import metiers.TypeLigne;
 
         // creer nv 
         public Ligne create(Ligne uneLigne) throws DAOException {
-            String query = "INSERT INTO ligne (libelle, idTypeLigne, arretDepart, arretArrive) VALUES (?,?,?,?)";
+            String query = "INSERT INTO ligne (libelle, idTypeLigne, arretDepart, arretArrive, duree) VALUES (?,?,?,?,?)";
 
             try (PreparedStatement ps = connexion.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
                                                                               // ^^ autoincr
@@ -33,7 +33,7 @@ import metiers.TypeLigne;
                 ps.setInt(2, uneLigne.getTypeLigne().getIdTypeLigne());
                 ps.setInt(3, uneLigne.getArretDepart().getIdArret());
                 ps.setInt(4, uneLigne.getArretArrive().getIdArret());
-
+                ps.setInt(5, uneLigne.getDuree());
 
                 int lignesModifiees = ps.executeUpdate();
 
@@ -60,7 +60,7 @@ import metiers.TypeLigne;
 
         public Ligne find(int IdLigne) throws DAOException {
 
-            String query = "SELECT idLigne, libelle, idTypeLigne, arretDepart, arretArrive FROM ligne WHERE idLigne = ?";
+            String query = "SELECT idLigne, libelle, idTypeLigne, arretDepart, arretArrive, duree FROM ligne WHERE idLigne = ?";
 
             try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
@@ -78,8 +78,10 @@ import metiers.TypeLigne;
                         TypeLigne typeLigne = typeligneDAO.find(rs.getInt("idTypeLigne"));
                         Arret arretDepart = arretDAO.find(rs.getInt("arretDepart"));
                         Arret arretArrive = arretDAO.find(rs.getInt("arretArrive"));
+                        int duree = rs.getInt("duree");
 
-                        return new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive);
+
+                        return new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive,duree);
                     } else {
                         return null; // aucune ligne trouvé
                     }
@@ -95,7 +97,7 @@ import metiers.TypeLigne;
         public List<Ligne> findAll() throws DAOException {
 
             List<Ligne> lignes = new ArrayList<>();
-            String query = "SELECT idLigne, libelle, idTypeLigne, arretDepart, arretArrive FROM ligne";
+            String query = "SELECT idLigne, libelle, idTypeLigne, arretDepart, arretArrive, duree FROM ligne";
 
             try (PreparedStatement ps = connexion.prepareStatement(query);
                  ResultSet rs = ps.executeQuery()) {
@@ -110,8 +112,10 @@ import metiers.TypeLigne;
                     TypeLigne typeLigne = typeligneDAO.find(rs.getInt("idTypeLigne"));
                     Arret arretDepart = arretDAO.find(rs.getInt("arretDepart"));
                     Arret arretArrive = arretDAO.find(rs.getInt("arretArrive"));
+                    int duree = rs.getInt("duree");
 
-                    Ligne ligne = new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive);
+
+                    Ligne ligne = new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive,duree);
                     lignes.add(ligne);
                 }
 
@@ -123,7 +127,7 @@ import metiers.TypeLigne;
 
         public boolean update(Ligne uneLigne) throws DAOException {
 
-            String query = "UPDATE ligne SET libelle=?, idTypeLigne=?, arretDepart=?, arretArrive=? WHERE idLigne = ?";
+            String query = "UPDATE ligne SET libelle=?, idTypeLigne=?, arretDepart=?, arretArrive=? , duree=? WHERE idLigne = ?";
 
             try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
@@ -132,6 +136,7 @@ import metiers.TypeLigne;
                 ps.setInt(3, uneLigne.getArretDepart().getIdArret());
                 ps.setInt(4, uneLigne.getArretArrive().getIdArret());
                 ps.setInt(5, uneLigne.getIdLigne());
+                ps.setInt(6,uneLigne.getDuree());
 
                 int lignesModifiees = ps.executeUpdate();
 
@@ -179,8 +184,10 @@ import metiers.TypeLigne;
                                 rs.getString("libelle"),
                                 typeDAO.find(rs.getInt("idTypeLigne")),
                                 arretDAO.find(rs.getInt("arretDepart")),
-                                arretDAO.find(rs.getInt("arretArrive"))
-                        ));
+                                arretDAO.find(rs.getInt("arretArrive")),
+                                rs.getInt("duree")
+
+                                ));
                     }
                 }
             } catch (SQLException e) {
