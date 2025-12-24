@@ -1,5 +1,6 @@
 package metiers;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class Ligne {
     private Arret arretDepart;
     private Arret arretArrive;
     private List<Arret> arretsDesservis = new ArrayList<>();
+    private int duree;
 
     public int getIdLigne() {
         return idLigne;
@@ -22,6 +24,11 @@ public class Ligne {
     public String getLibelle() {
         return libelle;
     }
+
+    public int getDuree() {
+        return duree;
+    }
+
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
@@ -88,30 +95,35 @@ public class Ligne {
         this.idLigne = idLigne;
     }
 
-    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive, List<Arret> arretsDesservis) {
+    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive, int duree,List<Arret> arretsDesservis) {
         this.idLigne = idLigne;
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.arretDepart = arretDepart;
         this.arretArrive = arretArrive;
+        this.duree=duree;
         this.arretsDesservis = arretsDesservis;
     }
 
 //pr insert
-    public Ligne( String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive) {
+    public Ligne( String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree) {
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.arretDepart = arretDepart;
         this.arretArrive = arretArrive;
+        this.duree=duree;
+
     }
 
     //pr find
-    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive) {
+    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree) {
         this.idLigne=idLigne;
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.arretDepart = arretDepart;
         this.arretArrive = arretArrive;
+        this.duree=duree;
+
     }
 }
 
