@@ -125,5 +125,8 @@ public class Ligne {
         this.duree=duree;
 
     }
+    public void setDuree(int duree) {
+        this.duree = duree;
+    }
 }
 

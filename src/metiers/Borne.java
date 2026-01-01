@@ -4,7 +4,7 @@ public class Borne {
     private int idBorne;
     private int nbVoyageVendu;
     private int nbVentesTickets;
-
+    // pr FK
     private Arret arret;
 
     public int getIdBorne() {
@@ -40,15 +40,17 @@ public class Borne {
         arret.addBorne(this);
     }
 
-    public Borne(int idBorne,int nbVoyageVendu,int NbVentesTickets){
+    public Borne(int idBorne,int nbVoyageVendu,int NbVentesTickets, Arret arret){
         this.idBorne=idBorne;
         this.nbVoyageVendu=nbVoyageVendu;
         this.nbVentesTickets=NbVentesTickets;
+        this.arret = arret;
     }
 
-    public Borne(int nbVoyageVendu,int NbVentesTickets){
+    public Borne(int nbVoyageVendu,int NbVentesTickets,Arret arret){
         this.nbVoyageVendu=nbVoyageVendu;
         this.nbVentesTickets=NbVentesTickets;
+        this.arret = arret;
     }
 
 
