@@ -19,9 +19,9 @@ class ArretTest {
     @Test
     void testConstructeurAvecId() {
         assertEquals(1, arret.getIdArret());
-        assertEquals("Gare Centrale", arret.getNom());
-        assertEquals(48.8566, arret.getLatitude());
-        assertEquals(2.3522, arret.getLongitude());
+        assertEquals("Gare_de_Tours", arret.getNom());
+        assertEquals(47.389011100000, arret.getLatitude());
+        assertEquals(0.692014600000, arret.getLongitude());
     }
 
     @Test
