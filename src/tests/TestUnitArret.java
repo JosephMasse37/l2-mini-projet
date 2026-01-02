@@ -72,4 +72,25 @@ class ArretTest {
         assertEquals(48.853, nouvelArret.getLatitude());
         assertEquals(2.369, nouvelArret.getLongitude());
     }
+
+    @Test
+    void testSetListeBornes() {
+        List<Borne> bornes = new ArrayList<>();
+        bornes.add(new Borne(2));
+
+        arret.setListeBornes(bornes);
+
+        assertEquals(1, arret.getListeBornes().size());
+    }
+
+    @Test
+    void testSetListeLignesDesservies() {
+        List<Ligne> lignes = new ArrayList<>();
+        lignes.add(ligne2);
+
+        arret.setListeLignesDesservies(lignes);
+
+        assertEquals(1, arret.getListeLignesDesservies().size());
+        assertEquals(ligne2, arret.getListeLignesDesservies().get(0));
+    }
 }
