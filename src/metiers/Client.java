@@ -62,4 +62,10 @@ public class Client {
         this.age = age;
         this.unAbonnement = unAbonnement;
     }
+
+    @Override
+    public String toString() {
+        return "Client [idClient=" + idClient + ", nom=" + nom + ", prenom=" + prenom + ", age=" + age
+                + ", unAbonnement=" + unAbonnement + "]";
+    }
 }

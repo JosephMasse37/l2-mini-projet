@@ -16,7 +16,7 @@ public class AbonnementDAO extends DAO<Abonnement> {
 
     // If we add a new type of abonnement
     public Abonnement create(Abonnement abonnement) throws DAOException {
-        String query = "INSERT INTO abonnement (formule, dateDabut, prix) VALUES (?, ?, ?)";
+        String query = "INSERT INTO abonnement (formule, prix, duree) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = connexion.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
 

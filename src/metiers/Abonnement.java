@@ -70,4 +70,10 @@ public class Abonnement {
         this.prix = prix;
         this.listeClients = new ArrayList<>();
     }
+
+    @Override
+    public String toString() {
+        return "Abonnement [idAbonnement=" + idAbonnement + ", formule=" + formule + ", prix=" + prix + ", duree="
+                + duree + ", listeClients=" + listeClients + "]";
+    }
 }
