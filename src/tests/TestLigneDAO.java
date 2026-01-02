@@ -20,6 +20,9 @@ public class TestLigneDAO {
  // init des private
     private Connection connexion;
     private LigneDAO ligneDAO;
+    // recup les dao needed
+    private ArretDAO arretDAO;
+    private TypeLigneDAO typeDAO;
 
     // b4 each test
     @BeforeEach
@@ -47,10 +50,6 @@ public class TestLigneDAO {
     @Test
     @DisplayName("Creation d'une ligne")
     void testCreate() throws DAOException {
-
-        // recup les dao needed
-        ArretDAO arretDAO = new ArretDAO(connexion);
-        TypeLigneDAO typeDAO = new TypeLigneDAO(connexion);
 
         //je cree l'objet mtn
         Arret depart = arretDAO.find(4);
@@ -80,11 +79,6 @@ public class TestLigneDAO {
     @Test
     @DisplayName("Recherche d'une ligne par ID")
     void testFindById() throws DAOException {
-
-        // recup les dao needed
-        ArretDAO arretDAO = new ArretDAO(connexion);
-        TypeLigneDAO typeDAO = new TypeLigneDAO(connexion);
-
 
         //je cree l'objet mtn
         Arret depart = arretDAO.find(4);
@@ -117,10 +111,6 @@ public class TestLigneDAO {
     @Test
     @DisplayName("Mise à jour d'une ligne")
     void testUpdate() throws DAOException {
-
-        // recup les dao needed
-        ArretDAO arretDAO = new ArretDAO(connexion);
-        TypeLigneDAO typeDAO = new TypeLigneDAO(connexion);
 
         //je cree l'objet mtn
         Arret depart = arretDAO.find(4);
@@ -155,10 +145,6 @@ public class TestLigneDAO {
     @Test
     @DisplayName("Suppression d'une ligne")
     void testDelete() throws DAOException {
-
-        // recup les dao needed
-        ArretDAO arretDAO = new ArretDAO(connexion);
-        TypeLigneDAO typeDAO = new TypeLigneDAO(connexion);
 
         //je cree l'objet mtn
         Arret depart = arretDAO.find(4);

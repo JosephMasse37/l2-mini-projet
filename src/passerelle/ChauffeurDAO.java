@@ -18,15 +18,21 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
 
     @Override
     public Chauffeur create(Chauffeur unChauffeur) throws DAOException {
-        String query = "INSERT INTO Chauffeur (idChauffeur, formation_tram, utilisateur) VALUES (?, ?, ?)";
+        String query = "INSERT INTO Chauffeur (formation_tram, username) VALUES (?, ?)";
 
-        try (PreparedStatement ps = connexion.prepareStatement(query)) {
-            ps.setInt(1, unChauffeur.getIdChauffeur());
-            ps.setBoolean(2, unChauffeur.isFormation_tram());
-            ps.setString(3, unChauffeur.getUtilisateur().getUsername());
+        try (PreparedStatement ps = connexion.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+            ps.setBoolean(1, unChauffeur.isFormation_tram());
+            ps.setString(2, unChauffeur.getUtilisateur().getUsername());
 
             int lignesModifiees = ps.executeUpdate();
             if (lignesModifiees == 0) throw new DAOException("Échec création chauffeur.");
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) { //verif de l'autoincr cree
+                    unChauffeur.setIdChauffeur(generatedKeys.getInt(1)); //1 = le num de la colonne, car la seule colonne ds ce ResultSet)
+                }
+            }
 
         } catch (SQLException e) {
             throw new DAOException("Erreur lors de la création du chauffeur", e);
@@ -36,7 +42,7 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
 
     @Override
     public Chauffeur find(int idChauffeur) throws DAOException {
-        String query = "SELECT idChauffeur, formation_tram, utilisateur FROM Chauffeur WHERE idChauffeur = ?";
+        String query = "SELECT idChauffeur, formation_tram, username FROM Chauffeur WHERE idChauffeur = ?";
 
         try (PreparedStatement ps = connexion.prepareStatement(query)) {
             ps.setInt(1, idChauffeur);
@@ -48,7 +54,7 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
 
                     int id = rs.getInt("idChauffeur");
                     boolean formation = rs.getBoolean("formation_tram");
-                    Utilisateur user = userDAO.find(rs.getString("utilisateur"));
+                    Utilisateur user = userDAO.find(rs.getString("username"));
 
                     return new Chauffeur(id, formation, user);
                 }
@@ -73,7 +79,7 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
                 chauffeurs.add(new Chauffeur(
                         rs.getInt("idChauffeur"),
                         rs.getBoolean("formation_tram"),
-                        userDAO.find(rs.getString("utilisateur"))
+                        userDAO.find(rs.getString("username"))
                 ));
             }
         } catch (SQLException e) {
@@ -86,7 +92,7 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
 
     @Override
     public boolean update(Chauffeur unChauffeur) throws DAOException {
-        String query = "UPDATE Chauffeur SET formation_tram = ?, utilisateur = ? WHERE idChauffeur = ?";
+        String query = "UPDATE Chauffeur SET formation_tram = ?, username = ? WHERE idChauffeur = ?";
 
         try (PreparedStatement ps = connexion.prepareStatement(query)) {
             ps.setBoolean(1, unChauffeur.isFormation_tram());
