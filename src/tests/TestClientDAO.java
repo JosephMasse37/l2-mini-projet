@@ -17,12 +17,10 @@ import passerelle.Connexion;
 //import passerelle.DAO;
 import passerelle.DAOException;
 import passerelle.ClientDAO;
-import passerelle.AbonnementDAO;
 
 public class TestClientDAO {
     private Connection connexion;
     private ClientDAO clientDAO;
-    private AbonnementDAO abonnementDAO;
 
     @BeforeEach
     void setUp() throws SQLException, DAOException {
@@ -34,7 +32,6 @@ public class TestClientDAO {
 
         //Instantiation of a ClientDAO 
         this.clientDAO = new ClientDAO(this.connexion);
-        this.abonnementDAO = new AbonnementDAO(this.connexion);
     }
 
     @AfterEach
