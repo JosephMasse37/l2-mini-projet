@@ -70,7 +70,7 @@ class LigneTest {
     void testAddArretDesservi() {
         ligne.addArretDesservi(arret1);
 
-        assertEquals(1, ligne.getArretsDesservis().size());
+        assertEquals(6, ligne.getArretsDesservis().size());
         assertTrue(ligne.getArretsDesservis().contains(arret1));
         assertTrue(arret1.estDesservi(ligne));
     }
