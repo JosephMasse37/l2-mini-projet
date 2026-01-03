@@ -105,7 +105,7 @@ public class TypeLigneDAO extends DAO<TypeLigne> {
 
     public boolean update(TypeLigne uneTypeLigne) throws DAOException {
 
-        String query = "UPDATE typeligne SET libelle=? WHERE IdTypeLigne = ?";
+        String query = "UPDATE typeligne SET libelle=? WHERE idTypeLigne = ?";
 
         try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
@@ -125,7 +125,7 @@ public class TypeLigneDAO extends DAO<TypeLigne> {
 
     public boolean delete(TypeLigne uneTypeLigne) throws DAOException {
 
-        String query = "DELETE FROM ligne WHERE idLigne = ?";
+        String query = "DELETE FROM typeligne WHERE idTypeLigne = ?";
 
         try (PreparedStatement ps = connexion.prepareStatement(query)) {
 

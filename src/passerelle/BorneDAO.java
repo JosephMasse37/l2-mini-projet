@@ -23,12 +23,19 @@ import metiers.Borne;
 
         // creer nv arret
         public Borne create(Borne uneBorne) throws DAOException {
-            String query = "INSERT INTO borne (nbVoyageVendu,NbVentesTickets) VALUES (?, ?)";
+            String query = "INSERT INTO borne (nbVoyageVendu, nbVentesTickets, idArret) VALUES (?, ?, ?)";
 
             try (PreparedStatement ps = connexion.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
                 // ^^ autoincr
                 ps.setInt(1, uneBorne.getNbVoyageVendu());
                 ps.setInt(2, uneBorne.getNbVentesTickets());
+
+                // pr recup idArret:
+                if (uneBorne.getArret() != null) {
+                    ps.setInt(3, uneBorne.getArret().getIdArret());
+                } else {
+                    throw new DAOException("Impossible de créer une borne sans arrêt associé.");
+                }
 
                 int lignesModifiees = ps.executeUpdate();
 
@@ -55,7 +62,10 @@ import metiers.Borne;
 
         public Borne find(int IdBorne) throws DAOException {
 
-            String query = "SELECT idBorne, nbVoyageVendu, NbVentesTickets FROM borne WHERE idBorne = ?";
+            String query = "SELECT idBorne, nbVoyageVendu, NbVentesTickets,idArret FROM borne WHERE idBorne = ?";
+
+            ArretDAO arretDAO = new ArretDAO(this.connexion);
+
             try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
                 ps.setInt(1, IdBorne);
@@ -67,8 +77,9 @@ import metiers.Borne;
                         int idBorne = rs.getInt("idBorne");
                         int nbVoyageVendu = rs.getInt("nbVoyageVendu");
                         int NbVentesTickets = rs.getInt("NbVentesTickets");
+                        Arret idArret = arretDAO.find(rs.getInt("idArret"));
 
-                        Borne borne = new Borne(idBorne, nbVoyageVendu, NbVentesTickets);
+                        Borne borne = new Borne(idBorne, nbVoyageVendu, NbVentesTickets,idArret);
                         return borne;
 
                     } else {
@@ -86,7 +97,9 @@ import metiers.Borne;
         public List<Borne> findAll() throws DAOException {
 
             List<Borne> bornes = new ArrayList<>();
-            String query = "SELECT idBorne, nbVoyageVendu, NbVentesTickets FROM borne";
+            String query = "SELECT idBorne, nbVoyageVendu, NbVentesTickets, idArret FROM borne";
+
+            ArretDAO arretDAO = new ArretDAO(this.connexion);
 
             try (PreparedStatement ps = connexion.prepareStatement(query);
                  ResultSet rs = ps.executeQuery()) {
@@ -96,8 +109,10 @@ import metiers.Borne;
                     int idBorne = rs.getInt("idBorne");
                     int nbVoyageVendu = rs.getInt("nbVoyageVendu");
                     int NbVentesTickets = rs.getInt("NbVentesTickets");
+                    Arret idArret = arretDAO.find(rs.getInt("idArret"));
 
-                    Borne borne = new Borne(idBorne, nbVoyageVendu, NbVentesTickets);
+
+                    Borne borne = new Borne(idBorne, nbVoyageVendu, NbVentesTickets,idArret);
                     bornes.add(borne);
                 }
 
@@ -109,13 +124,20 @@ import metiers.Borne;
 
         public boolean update(Borne uneBorne) throws DAOException {
 
-            String query = "UPDATE borne SET nbVoyageVendu = ?, NbVentesTickets = ? WHERE idBorne = ?";
+            String query = "UPDATE borne SET nbVoyageVendu = ?, NbVentesTickets = ?, idArret = ? WHERE idBorne = ?";
 
             try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
                 ps.setInt(1, uneBorne.getNbVoyageVendu());
                 ps.setInt(2, uneBorne.getNbVentesTickets());
-                ps.setInt(3, uneBorne.getIdBorne());
+
+                if (uneBorne.getArret() != null) {
+                    ps.setInt(3, uneBorne.getArret().getIdArret());
+                } else {
+                    throw new DAOException("Impossible de mettre à jour : l'arrêt est manquant.");
+                }
+
+                ps.setInt(4, uneBorne.getIdBorne());
 
                 int lignesModifiees = ps.executeUpdate();
 
