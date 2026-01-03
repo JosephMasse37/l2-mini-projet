@@ -76,7 +76,7 @@ public class Ligne {
         }
     }
 
-    public boolean estDesservi(Arret unArret) {
+   /* public boolean estDesservi(Arret unArret) {
         boolean arretDesservi = false;
         int i = 0;
 
@@ -87,6 +87,15 @@ public class Ligne {
             i++;
         }
         return arretDesservi;
+    }
+     J AI CHANGE CAR PLUS LISIBLE ET PAS MANIP D INDEX DONC MOINS D ERREURS POSSIBLE*/
+
+    public boolean estDesservi(Arret unArret) {
+
+        if (unArret == null) return false;
+
+        return this.arretsDesservis.stream()
+                .anyMatch(a -> a.getIdArret() == unArret.getIdArret());
     }
 
     public Ligne(String libelle, TypeLigne typeLigne, int idLigne) {

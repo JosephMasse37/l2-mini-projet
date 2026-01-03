@@ -35,15 +35,16 @@ public class Chauffeur {
         }
     }
 
+
     public Chauffeur(int idChauffeur, boolean formation_tram, Utilisateur utilisateur) {
         this.idChauffeur = idChauffeur;
         this.formation_tram = formation_tram;
-        this.utilisateur = utilisateur;
+        this.setUtilisateur(utilisateur); //garantit lien direct pcq on add via set
     }
 
     //pr create dao
     public Chauffeur( boolean formation_tram, Utilisateur utilisateur) {
         this.formation_tram = formation_tram;
-        this.utilisateur = utilisateur;
+        this.setUtilisateur(utilisateur);   //garantit lien direct pcq on add via set
     }
 }
