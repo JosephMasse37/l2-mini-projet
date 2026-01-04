@@ -39,14 +39,6 @@ public class VehiculeDAO extends DAO<Vehicule> {
                 throw new DAOException("Fail to create the vehicule no addition to the database");
             }
 
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    vehicule.setNumVehicule(generatedKeys.getInt(1));
-                } else {
-                    throw new DAOException("Creating vehicule failed, no ID obtained.");
-                }
-            }
-
         } catch (SQLException e) {
             System.err.println("Error while creating vehicule. Details:");
             e.printStackTrace();
@@ -58,7 +50,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
     @Override
     public Vehicule find(int idVehicule) throws DAOException {
         Vehicule vehicule = null;
-        String query = "SELECT v.*, t.typeLibelle as typeLibelle FROM vehicule v " +
+        String query = "SELECT v.*, t.libelle as typeLibelle FROM vehicule v " +
                        "JOIN typeVehicule t ON v.idTypeVehicule = t.idTypeVehicule " +
                        "WHERE v.numVehicule = ?";
         
@@ -89,7 +81,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
                         throw new DAOException("Unknown vehicle type: " + typeLibelle);
                     }
                     
-                    TypeVehicule typeVehicule = new TypeVehicule(rs.getInt("typeLibelle"), typeLibelle);
+                    TypeVehicule typeVehicule = new TypeVehicule(rs.getInt("idTypeVehicule"), typeLibelle);
                     vehicule.setTypevehicule(typeVehicule);
                 }
             }
@@ -153,7 +145,7 @@ public class VehiculeDAO extends DAO<Vehicule> {
     public List<Vehicule> findAll() throws DAOException {
         List<Vehicule> vehicules = new ArrayList<>();
         Vehicule vehicule = null;
-        String query = "SELECT v.* , t.libelle as typeLibelle FROM vehicule v " +
+        String query = "SELECT v.*, t.libelle as typeLibelle FROM vehicule v " +
                        "JOIN typeVehicule t ON v.idTypeVehicule = t.idTypeVehicule";
 
         // try-with-ressources to auto-close resources (ps and rs)

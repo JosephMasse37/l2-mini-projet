@@ -78,7 +78,6 @@ public abstract class Vehicule {
         this.dateFabrication=dateFabrication;
         this.dateMiseEnService=dateMiseEnService;
         this.dateHeureDerniereMaintenance=dateHeureDerniereMaintenance;
-        setTypevehicule(typevehicule); // pour que Vehicule et Typevehic soit synchro
     }
 
     public Vehicule( int numVehicule,String marque,String modele,LocalDate dateFabrication,LocalDate dateMiseEnService,LocalDateTime dateHeureDerniereMaintenance,TypeVehicule typevehicule){
@@ -89,5 +88,13 @@ public abstract class Vehicule {
         this.dateMiseEnService=dateMiseEnService;
         this.dateHeureDerniereMaintenance=dateHeureDerniereMaintenance;
         setTypevehicule(typevehicule); // pour que Vehicule et Typevehic soit synchro
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicule [numVehicule=" + numVehicule + ", marque=" + marque + ", modele=" + modele
+                + ", dateFabrication=" + dateFabrication + ", dateMiseEnService=" + dateMiseEnService
+                + ", dateHeureDerniereMaintenance=" + dateHeureDerniereMaintenance + ", typevehicule=" + typevehicule
+                + "]";
     }
 }
