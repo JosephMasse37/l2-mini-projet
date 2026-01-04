@@ -15,7 +15,7 @@ public class TestDessert {
         // Création des objets nécessaires
         Arret arret = new Arret(1, "Gare de Tours", 48.8566, 2.3522);
         TypeLigne typeLigne = new TypeLigne(1, "Bus");
-        Ligne ligne = new Ligne("Ligne A", typeLigne, 10);
+        Ligne ligne = new Ligne(10, "Ligne A", typeLigne);
 
         // Vérification préconditions
         assertTrue(arret.getListeLignesDesservies().isEmpty(), "Arret should have no lignes initially");
@@ -45,7 +45,7 @@ public class TestDessert {
         // Test des setters
         Arret nouvelArret = new Arret(2, "Place de la Mairie", 48.8570, 2.3500);
         TypeLigne nouveauType = new TypeLigne(2, "Tram");
-        Ligne nouvelleLigne = new Ligne("Ligne B", nouveauType, 20);
+        Ligne nouvelleLigne = new Ligne(20, "Ligne B", nouveauType);
 
         dessert.setUnArret(nouvelArret);
         dessert.setUneLigne(nouvelleLigne);
