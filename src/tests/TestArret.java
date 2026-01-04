@@ -1,19 +1,30 @@
-package metiers;
+package tests;
 
+import metiers.Arret;
+import metiers.Borne;
+import metiers.Ligne;
+import metiers.TypeLigne;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ArretTest {
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class TestArret {
 
     private Arret arret;
     private Ligne ligne1;
     private Ligne ligne2;
+    private TypeLigne typeLigne;
 
     @BeforeEach
     void setUp() {
+        typeLigne = new TypeLigne("Test");
         arret = new Arret(1, "Gare_de_Tours", 47.389011100000, 0.692014600000);
-        ligne1 = new Ligne(100, "Ligne 2");
-        ligne2 = new Ligne(200, "Ligne 4");
+        ligne1 = new Ligne(100, "Ligne 2", typeLigne);
+        ligne2 = new Ligne(200, "Ligne 4", typeLigne);
     }
 
     @Test
@@ -39,7 +50,7 @@ class ArretTest {
 
     @Test
     void testAddBorne() {
-        Borne borne = new Borne(1);
+        Borne borne = new Borne(1, 0, arret);
 
         arret.addBorne(borne);
 
@@ -76,7 +87,7 @@ class ArretTest {
     @Test
     void testSetListeBornes() {
         List<Borne> bornes = new ArrayList<>();
-        bornes.add(new Borne(2));
+        bornes.add(new Borne(2, 2, arret));
 
         arret.setListeBornes(bornes);
 

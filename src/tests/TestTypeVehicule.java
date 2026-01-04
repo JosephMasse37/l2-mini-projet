@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-class TypeVehiculeTest {
+class TestTypeVehicule {
 
     private TypeVehicule typeVehicule;
     private Vehicule vehicule1;
@@ -17,8 +19,11 @@ class TypeVehiculeTest {
     @BeforeEach
     void setUp() {
         typeVehicule = new TypeVehicule(1, "Bus");
-        vehicule1 = new Vehicule("78");
-        vehicule2 = new Vehicule("79");
+        vehicule1 = new Bus(999, "Alstom", "Citadis", LocalDate.now(), LocalDate.now(), LocalDateTime.now());
+        vehicule1.setTypevehicule(typeVehicule);
+
+        vehicule2 = new Bus(999, "Alstom", "Citadis", LocalDate.now(), LocalDate.now(), LocalDateTime.now());
+        vehicule2.setTypevehicule(typeVehicule);
     }
 
     @Test

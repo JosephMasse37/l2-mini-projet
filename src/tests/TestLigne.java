@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-class LigneTest {
+class TestLigne {
 
     private Ligne ligne;
     private TypeLigne typeLigne;
@@ -21,7 +21,7 @@ class LigneTest {
         arret1 = new Arret(1, "St_Pierre_Gare", 48.85, 2.35);
         arret2 = new Arret(2, "Charcot", 48.86, 2.36);
 
-        ligne = new Ligne("Ligne 6", typeLigne, 10);
+        ligne = new Ligne(10, "Ligne 6", typeLigne);
     }
 
     @Test
@@ -45,7 +45,7 @@ class LigneTest {
         ligne.setTypeLigne(nouveauType);
 
         assertEquals(nouveauType, ligne.getTypeLigne());
-        assertTrue(nouveauType.getLignes().contains(ligne));
+        assertTrue(nouveauType.getListeLignes().contains(ligne));
     }
 
     @Test

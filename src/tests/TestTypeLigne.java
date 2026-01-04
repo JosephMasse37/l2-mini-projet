@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-class TypeLigneTest {
+class TestTypeLigne {
 
     private TypeLigne typeLigne;
     private Ligne ligne1;
@@ -17,8 +17,8 @@ class TypeLigneTest {
     @BeforeEach
     void setUp() {
         typeLigne = new TypeLigne(1, "Bus");
-        ligne1 = new Ligne("Ligne A", typeLigne, 10);
-        ligne2 = new Ligne("Ligne B", typeLigne, 20);
+        ligne1 = new Ligne(10, "Ligne A", typeLigne);
+        ligne2 = new Ligne(20, "Ligne B", typeLigne);
     }
 
     @Test
