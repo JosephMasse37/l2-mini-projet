@@ -83,7 +83,7 @@ public class TestArretDAO {
         assertEquals(arretCree.getLongitude(), trouvee.getLongitude(), "La Longitude ne correspond pas");
         assertEquals(arretCree.getLatitude(), trouvee.getLatitude(), "La Latitude ne correspond pas");
 
-        System.out.println("Succès | ID:" + trouvee.getIdArret() + " | Nom:" + trouvee.getNom() + " | Latitude:" + trouvee.getLatitude() + " | Longitude:" + trouvee.getLongitude());
+        System.out.println("Succès ! ID:" + trouvee.getIdArret() + " , Nom:" + trouvee.getNom() + " , Latitude:" + trouvee.getLatitude() + " , Longitude:" + trouvee.getLongitude());
     }
 
     @Test
@@ -152,7 +152,7 @@ public class TestArretDAO {
            // assertNotNull pas possible car type primitifs donc:
             assertTrue(UnArret.getLatitude() != 0.0, "La latitude est vide (0.0)");
             assertTrue(UnArret.getLongitude() != 0.0, "La longitude est vide (0.0)");
-            System.out.println("Nom: " + UnArret.getNom() + " | Latitude: " + UnArret.getLatitude() + " | Longitude : " + UnArret.getLongitude()); }
+            System.out.println("Nom: " + UnArret.getNom() + " , Latitude: " + UnArret.getLatitude() + " , Longitude : " + UnArret.getLongitude()); }
     }
 
     @Test
@@ -175,7 +175,7 @@ public class TestArretDAO {
             assertTrue(UnArret.getLatitude() != 0.0, "La latitude est vide (0.0)");
             assertTrue(UnArret.getLongitude() != 0.0, "La longitude est vide (0.0)");
 
-            System.out.println("Succès | Trouvé : " + UnArret.getNom() + " [ID: " + UnArret.getIdArret() + "]");
+            System.out.println("Succès ! Trouvé : " + UnArret.getNom() + " [ID: " + UnArret.getIdArret() + "]");
         }
     }
 }

@@ -208,7 +208,7 @@ public class TestLigneDAO {
             assertNotNull(l.getArretDepart(), "Arrêt départ manquant pour la ligne " + l.getIdLigne());
             assertNotNull(l.getArretArrive(), "Arrêt arrivée manquant pour la ligne " + l.getIdLigne());
 
-            System.out.println("Succès | ID:" + l.getIdLigne() + " | Lib:" + l.getLibelle() + "| Type:" + l.getTypeLigne().getLibelle()+ " | Durée:" + l.getDuree() + " min | Dep:" + l.getArretDepart().getNom() + " | Arr:" + l.getArretArrive().getNom());
+            System.out.println("Succès : ID:" + l.getIdLigne() + " ,Libelle:" + l.getLibelle() + ", Type:" + l.getTypeLigne().getLibelle()+ " ,Durée:" + l.getDuree() + " min , Dep:" + l.getArretDepart().getNom() + " , Arret:" + l.getArretArrive().getNom());
         }
 
         System.out.println(" Succès : " + ListeLignesDuType.size() + " lignes filtrées avec succès.");
