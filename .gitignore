@@ -1,2 +1,6 @@
 bin/*/*.class
 lib/bd_gestbus (2).sql
+lib/junit-jupiter-api-6.1.0-M1.jar
+lib/junit-platform-console-standalone-1.10.0.jar
+.vscode/settings.json
+lib/junit-jupiter-api-6.1.0-M1.jar

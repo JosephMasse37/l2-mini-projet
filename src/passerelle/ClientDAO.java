@@ -52,7 +52,7 @@ public class ClientDAO extends DAO<Client>  {
 
     @Override
     public Client find(int idClient) throws DAOException {
-        String query = "SELECT idClient, nom, prenom, age FROM client WHERE idClient = ?";
+        String query = "SELECT idClient, nom, prenom, age, idAbonnement FROM client WHERE idClient = ?";
         
         try (PreparedStatement ps = connexion.prepareStatement(query)) {
             
@@ -86,7 +86,14 @@ public class ClientDAO extends DAO<Client>  {
             ps.setString(1, client.getNom());
             ps.setString(2, client.getPrenom());
             ps.setInt(3, client.getAge());
-            ps.setInt(4, client.getUnAbonnement().getIdAbonnement());
+            if (client.getUnAbonnement() != null) {
+                ps.setInt(4, client.getUnAbonnement().getIdAbonnement());
+            } else {
+                //If the client has no abonnement, we set the foreign key to null -> java.sql.Types.INTEGER tells 
+                //the driver that the type of the column is Integer and it has to put null in it
+                ps.setNull(4, java.sql.Types.INTEGER);
+            }
+            ps.setInt(5, client.getIdClient());
 
             int lignesModifiees = ps.executeUpdate();
 
