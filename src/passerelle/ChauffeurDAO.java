@@ -134,7 +134,7 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
                     liste.add(new Chauffeur(
                             rs.getInt("idChauffeur"),
                             rs.getBoolean("formation_tram"),
-                            userDAO.find(rs.getString("utilisateur"))
+                            userDAO.find(rs.getString("username"))
                     ));
                 }
             }
