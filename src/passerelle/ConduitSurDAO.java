@@ -146,7 +146,7 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
         try {
             st = connexion.createStatement();
             String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur " +
-                    "WHERE idChauffeur = ?" + idChauffeur + " AND idLigne = " + idLigne + " AND numVehicule = " + numVehicule + ";";
+                    "WHERE idChauffeur = " + idChauffeur + " AND idLigne = " + idLigne + " AND numVehicule = " + numVehicule + ";";
             rs = st.executeQuery(req);
 
             while (rs.next()) {
@@ -336,6 +336,6 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
             e.printStackTrace();
         }
 
-        return null;
+        return listeConduites;
     }
 }
