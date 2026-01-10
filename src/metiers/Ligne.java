@@ -98,7 +98,7 @@ public class Ligne {
                 .anyMatch(a -> a.getIdArret() == unArret.getIdArret());
     }
 
-    public Ligne(String libelle, TypeLigne typeLigne, int idLigne) {
+    public Ligne(int idLigne, String libelle, TypeLigne typeLigne) {
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.idLigne = idLigne;

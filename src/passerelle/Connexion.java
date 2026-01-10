@@ -34,6 +34,7 @@ public class Connexion {
 
         return instanceConnexion;
     }
+
     public static void close() throws DAOException {
         if (instanceConnexion != null) {
             try {

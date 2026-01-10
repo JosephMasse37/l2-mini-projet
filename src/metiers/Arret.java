@@ -66,7 +66,7 @@ public class Arret {
 
     public void addLigneDesservie(Ligne uneLigne) {
         this.listeLignesDesservies.add(uneLigne);
-        if (!uneLigne.estDesservi(this)) {
+        if (uneLigne.getArretsDesservis().isEmpty() || !uneLigne.estDesservi(this)) {
             uneLigne.addArretDesservi(this);
         }
     }

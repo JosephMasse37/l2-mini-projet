@@ -27,4 +27,9 @@ public class Dessert {
         unArret.addLigneDesservie(uneLigne);
         uneLigne.addArretDesservi(unArret);
     }
+
+    @Override
+    public String toString() {
+        return "Arrêt : " + unArret.getNom() + " desservi par la Ligne " + uneLigne.getLibelle();
+    }
 }
