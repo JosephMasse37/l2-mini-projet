@@ -1,5 +1,8 @@
 package LoireUrbanisme.menu;
 
+import Interface.EcranFenetre;
+import LoireUrbanisme.map.Map;
+
 public class MenuAction {
 
     private boolean menuCancelled = false; // pas cancel

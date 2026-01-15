@@ -1,12 +1,15 @@
 package Interface;
 
+import LoireUrbanisme.map.Map;
+import LoireUrbanisme.menu.MenuAction;
+import LoireUrbanisme.menu.MenuEvent;
 import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import LoireUrbanisme.menu.Menu;
 
-public class EcranFenetre extends JFrame {
+public class EcranFenetre extends JFrame implements MenuEvent {
 
     private Menu menu;
     private JPanel zoneContenu;
@@ -21,6 +24,7 @@ public class EcranFenetre extends JFrame {
         setLayout(new BorderLayout()); //plan fenetre (divions ) :
         //  Utilisation de la POO
         menu = new Menu();
+        menu.addMenuEvent(this);
         zoneContenu = creerZoneContenu();
 
         // ajoute les composants à la fenêtre
@@ -35,6 +39,34 @@ public class EcranFenetre extends JFrame {
         return container;
     }
 
+    @Override
+    public void menuSelected(int index, int subIndex, MenuAction action) {
+
+        zoneContenu.removeAll();
+
+        switch (index) {
+
+            case 0: // Vue d'ensemble
+                zoneContenu.add(new JLabel("Vue d'ensemble"));
+                break;
+
+            case 1: // Réseau & Trafic
+                if (subIndex == 1) {
+                    zoneContenu.add(new JLabel("Bus"));
+                } else if (subIndex == 2) {
+                    zoneContenu.add(new JLabel("Tram"));
+                }
+                break;
+
+            case 6: // Map
+                zoneContenu.add(new Map());
+                break;
+        }
+
+        zoneContenu.revalidate();
+        zoneContenu.repaint();
+    }
+
     public static void main(String[] args) {
         try {
             FlatDarkLaf.setup();
@@ -42,11 +74,11 @@ public class EcranFenetre extends JFrame {
             System.err.println("Échec au chargement du thème");
         }
 
+        EcranFenetre fenetreMain = new EcranFenetre();
+
         // Lancement
         SwingUtilities.invokeLater(() -> {
-            new EcranFenetre().setVisible(true);
+            fenetreMain.setVisible(true);
         });
-
-
     }
 }
