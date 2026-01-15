@@ -27,7 +27,7 @@ class TestLigne {
 
     @Test
     void testConstructeurSimple() {
-        assertEquals("Ligne 1", ligne.getLibelle());
+        assertEquals("Ligne 6", ligne.getLibelle());
         assertEquals(10, ligne.getIdLigne());
         assertEquals(typeLigne, ligne.getTypeLigne());
     }
@@ -70,8 +70,9 @@ class TestLigne {
     @Test
     void testAddArretDesservi() {
         ligne.addArretDesservi(arret1);
+        ligne.addArretDesservi(arret2);
 
-        assertEquals(6, ligne.getArretsDesservis().size());
+        assertEquals(2, ligne.getArretsDesservis().size());
         assertTrue(ligne.getArretsDesservis().contains(arret1));
         assertTrue(arret1.estDesservi(ligne));
     }
