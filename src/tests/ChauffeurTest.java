@@ -40,6 +40,4 @@ class ChauffeurTest {
         assertEquals(user2, chauffeur2.getUtilisateur(), "Le chauffeur doit être lié à user2");
         assertEquals(chauffeur2, user2.getChauffeur(), "L'utilisateur doit pointer vers son chauffeur");
     }
-
-
 }
