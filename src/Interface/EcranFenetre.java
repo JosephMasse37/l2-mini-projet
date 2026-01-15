@@ -1,5 +1,6 @@
 package Interface;
 
+import LoireUrbanisme.borne.BornePanel;
 import LoireUrbanisme.map.Map;
 import LoireUrbanisme.menu.MenuAction;
 import LoireUrbanisme.menu.MenuEvent;
@@ -8,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import LoireUrbanisme.menu.Menu;
+import metiers.Borne;
 
 public class EcranFenetre extends JFrame implements MenuEvent {
 
@@ -56,6 +58,10 @@ public class EcranFenetre extends JFrame implements MenuEvent {
                 } else if (subIndex == 2) {
                     zoneContenu.add(new JLabel("Tram"));
                 }
+                break;
+
+            case 3: // Réseau & Borne
+                zoneContenu.add(new BornePanel());
                 break;
 
             case 6: // Map
