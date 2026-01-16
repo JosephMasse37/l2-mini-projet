@@ -156,7 +156,7 @@ public class MenuItem extends JPanel {
                 Image img = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
                 b.setIcon(new ImageIcon(img));
                 b.setIconTextGap(15);
-            } catch (Exception e) { e.printStackTrace();/* Pas d'icône trouvée */ }
+            } catch (Exception e) { e.printStackTrace(); } // Pas d'icône trouvée
         } else {
             b.setFont(customFont.deriveFont(Font.PLAIN, 12f));
             b.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));        }
