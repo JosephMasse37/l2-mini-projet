@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuItem extends JPanel {
 
@@ -152,11 +153,11 @@ public class MenuItem extends JPanel {
             b.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
             try {
                 String fileName = texte.replace(" ", "_").replace("'", "").replace("é", "e");
-                ImageIcon icon = new ImageIcon(getClass().getResource("/icon/" + fileName + ".png"));
+                ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/icon/" + fileName + ".png")));
                 Image img = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
                 b.setIcon(new ImageIcon(img));
                 b.setIconTextGap(15);
-            } catch (Exception e) { e.printStackTrace(); } // Pas d'icône trouvée
+            } catch (Exception e) { /* Pas d'icône trouvée */ }
         } else {
             b.setFont(customFont.deriveFont(Font.PLAIN, 12f));
             b.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));        }
