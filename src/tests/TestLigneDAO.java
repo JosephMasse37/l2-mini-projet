@@ -32,6 +32,8 @@ public class TestLigneDAO {
                                                = donc on crée un espace de travail temporaire (GRACE A CA QU'ON VA FAIRE UN ROLLBACK!!)
                                                 */
         this.ligneDAO = new LigneDAO(this.connexion); // on instancie une nvlle LigneDAO connectée a la bdd
+        this.arretDAO = new ArretDAO(this.connexion);
+        this.typeDAO = new TypeLigneDAO(this.connexion);
     }
 
     //after each test
@@ -55,7 +57,7 @@ public class TestLigneDAO {
         Arret depart = arretDAO.find(4);
         Arret arrivee = arretDAO.find(14);
         TypeLigne type = typeDAO.find(1);
-        Ligne ligne = new Ligne("14",type,depart,arrivee,8);
+        Ligne ligne = new Ligne("14",type,depart,arrivee,8,"0xFFFFFF");
 
         //on insere la ligne cree:
         Ligne ligneCreee = ligneDAO.create(ligne);
@@ -70,6 +72,7 @@ public class TestLigneDAO {
         assertEquals(depart.getIdArret(), ligneCreee.getArretDepart().getIdArret(),"Le depart ne correspond pas");
         assertEquals(arrivee.getIdArret(), ligneCreee.getArretArrive().getIdArret(),"L'arrivee ne correspond pas");
         assertEquals(8, ligneCreee.getDuree(), "La durée ne correspond pas");
+        assertEquals("0xFFFFFF", ligneCreee.getCouleur(), "La couleur ne correspond pas");
         //pcq Java envoie l'objet avec l'ID 0 alors :
         assertTrue(ligneCreee.getIdLigne() > 0, "L'ID de la ligne devrait avoir été généré par la BDD");
         System.out.println("Succès | ID:" + ligneCreee.getIdLigne() + " | Lib:" + ligneCreee.getLibelle() + "| Type:" + ligneCreee.getTypeLigne().getLibelle()+ " | Durée:" + ligneCreee.getDuree() + " min | Dep:" + ligneCreee.getArretDepart().getNom() + " | Arr:" + ligneCreee.getArretArrive().getNom());
@@ -84,7 +87,7 @@ public class TestLigneDAO {
         Arret depart = arretDAO.find(4);
         Arret arrivee = arretDAO.find(14);
         TypeLigne type = typeDAO.find(1);
-        Ligne ligne = new Ligne("14",type,depart,arrivee,8);
+        Ligne ligne = new Ligne("14",type,depart,arrivee,8,"0x000000");
 
         //on insere la ligne cree:
         Ligne ligneCreee = ligneDAO.create(ligne);
@@ -101,6 +104,7 @@ public class TestLigneDAO {
         assertEquals(ligneCreee.getIdLigne(), trouvee.getIdLigne(), "L'ID ne correspond pas");
         assertEquals(ligneCreee.getLibelle(), trouvee.getLibelle(), "Le libellé ne correspond pas");
         assertEquals(ligneCreee.getDuree(), trouvee.getDuree(), "La durée ne correspond pas");
+        assertEquals(ligneCreee.getCouleur(), trouvee.getCouleur(), "La couleur ne correspond pas");
         assertEquals(ligneCreee.getTypeLigne().getIdTypeLigne(), trouvee.getTypeLigne().getIdTypeLigne());
         assertEquals(ligneCreee.getArretDepart().getIdArret(), trouvee.getArretDepart().getIdArret());
         assertEquals(ligneCreee.getArretArrive().getIdArret(), trouvee.getArretArrive().getIdArret());
@@ -116,7 +120,7 @@ public class TestLigneDAO {
         Arret depart = arretDAO.find(4);
         Arret arrivee = arretDAO.find(14);
         TypeLigne type = typeDAO.find(1);
-        Ligne ligne = new Ligne("14",type,depart,arrivee,8);
+        Ligne ligne = new Ligne("14",type,depart,arrivee,8,"0xF0F0F0");
 
         //on insere la ligne cree:
         Ligne ligneCreee = ligneDAO.create(ligne);
@@ -150,7 +154,7 @@ public class TestLigneDAO {
         Arret depart = arretDAO.find(4);
         Arret arrivee = arretDAO.find(14);
         TypeLigne type = typeDAO.find(1);
-        Ligne ligne = new Ligne("14",type,depart,arrivee,8);
+        Ligne ligne = new Ligne("14",type,depart,arrivee,8, "0x000000");
 
         //on insere la ligne cree:
         Ligne ligneCreee = ligneDAO.create(ligne);

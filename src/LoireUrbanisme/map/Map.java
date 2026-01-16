@@ -1,28 +1,25 @@
 package LoireUrbanisme.map;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Area;
-import java.awt.geom.RoundRectangle2D;
-import javax.swing.ImageIcon;
 import javax.swing.event.MouseInputListener;
+
+import metiers.Arret;
+import metiers.Ligne;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCenter;
+import org.jxmapviewer.painter.CompoundPainter;
+import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.GeoPosition;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Map extends JXMapViewer {
+
     private MapEvent event;
+    private List<Ligne> lignesSelectionnees; // null = toutes les lignes
 
     public MapEvent getEvent() {
         return event;
@@ -32,19 +29,46 @@ public class Map extends JXMapViewer {
         this.event = event;
     }
 
+    public List<Ligne> getLignesSelectionnees() {
+        return lignesSelectionnees;
+    }
+
+    public void setLignesSelectionnees(List<Ligne> lignesSelectionnees) {
+        // si null => toutes les lignes
+        if (lignesSelectionnees == null) {
+            this.lignesSelectionnees = null;
+        } else {
+            // copie pour éviter les effets de bord
+            this.lignesSelectionnees = new ArrayList<>(lignesSelectionnees);
+        }
+        repaint();
+    }
+
     public Map() {
         init();
     }
 
     public void init() {
-        setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo("", "https://b.tile.openstreetmap.fr/hot/")));
+        setTileFactory(new DefaultTileFactory(
+                new OSMTileFactoryInfo("", "https://b.tile.openstreetmap.fr/hot/")
+        ));
         setAddressLocation(new GeoPosition(47.390034, 0.688837));
         setZoom(6);
 
-        // Init Event
         MouseInputListener mm = new PanMouseInputListener(this);
         addMouseListener(mm);
         addMouseMotionListener(mm);
         addMouseWheelListener(new ZoomMouseWheelListenerCenter(this));
+    }
+
+    public void afficherReseau(List<Arret> arrets, List<Ligne> lignes) {
+
+        List<Painter<JXMapViewer>> painters = new ArrayList<>();
+
+        painters.add(new LignePainter(lignes, lignesSelectionnees)); // lignes (filtrées)
+        painters.add(new ArretPainter(arrets, lignesSelectionnees)); // arrêts au-dessus
+
+        setOverlayPainter(new CompoundPainter<>(painters));
+        repaint();
     }
 }
