@@ -85,14 +85,21 @@ public class ChauffeursAction {
             c.getUtilisateur().setNom(nom);
             c.setFormation_tram(formationTram);
 
-            // Sauvegarder en base
-            chauffeurDAO.update(c);
-            utilisateurDAO.update(c.getUtilisateur());
+            try {
+                // Sauvegarder en base
+                chauffeurDAO.update(c);
+                utilisateurDAO.update(c.getUtilisateur());
 
-            JOptionPane.showMessageDialog(parentPanel,
-                    "Le chauffeur a été modifié avec succès.",
-                    "Modification réussie",
-                    JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(parentPanel,
+                        "Le chauffeur a été modifié avec succès.",
+                        "Modification réussie",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(parentPanel,
+                        "Le chauffeur n'a pas pu être modifié.",
+                        "Modification échouée",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 

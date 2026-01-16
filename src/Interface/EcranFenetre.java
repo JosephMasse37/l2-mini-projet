@@ -50,7 +50,7 @@ public class EcranFenetre extends JFrame implements MenuEvent {
 
         switch (index) {
             case 0:
-                zoneContenu.add(new JLabel("Vue d'ensemble"));
+                afficherVueEnsemble();
                 break;
 
             case 1:
@@ -78,6 +78,10 @@ public class EcranFenetre extends JFrame implements MenuEvent {
 
         zoneContenu.revalidate();
         zoneContenu.repaint();
+    }
+
+    private void afficherVueEnsemble() {
+        zoneContenu.add(new JLabel("Vue d'ensemble"));
     }
 
     private void afficherMap() {
@@ -201,6 +205,7 @@ public class EcranFenetre extends JFrame implements MenuEvent {
 
         // Lancement
         SwingUtilities.invokeLater(() -> {
+            fenetreMain.afficherVueEnsemble();
             fenetreMain.setVisible(true);
         });
     }

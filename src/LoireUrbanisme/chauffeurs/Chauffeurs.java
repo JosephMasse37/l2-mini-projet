@@ -15,7 +15,10 @@ import passerelle.DAOException;
 public class Chauffeurs extends JPanel {
 
     private Font customFont;
+    private Color violet = new Color(165, 55, 255);
     private JTable tableau;
+
+    private boolean filtreFormationTram = false;
 
     public Chauffeurs() {
         init();
@@ -28,8 +31,20 @@ public class Chauffeurs extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); //marg int
         setOpaque(false);
 
-        add(titre(), BorderLayout.NORTH);
+        placeElements();
+    }
+
+    private void placeElements() {
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout(5, 5));
+        topPanel.setOpaque(false);
+
+        topPanel.add(titre(), BorderLayout.NORTH);
+        topPanel.add(filtreFormationTramButton(), BorderLayout.SOUTH);
+
+        add(topPanel, BorderLayout.NORTH);
         add(tableau(), BorderLayout.CENTER);
+        add(addButton(), BorderLayout.SOUTH);
     }
 
     private void chargerPolice() {
@@ -50,6 +65,39 @@ public class Chauffeurs extends JPanel {
         return titre;
     }
 
+    private JComponent filtreFormationTramButton() {
+        JButton filtreBtn = new JButton("Filtrer Formation Tram");
+
+        filtreBtn.setFont(new Font(customFont.getFontName(), Font.PLAIN, 14));
+
+        // Remplir le fond avec couleur
+        if (filtreFormationTram) {
+            filtreBtn.setBackground(violet); // Violet
+        } else {
+            filtreBtn.setBackground(getBackground()); // Fond de base
+        }
+
+        filtreBtn.setPreferredSize(new Dimension(160, 40));
+        filtreBtn.setBorder(BorderFactory.createLineBorder(violet, 1, true));
+
+        // Supprimer le fond de base
+        filtreBtn.setFocusPainted(false);
+        filtreBtn.setOpaque(true);
+
+        // Action du bouton
+        filtreBtn.addActionListener(e -> {
+            filtreFormationTram = !filtreFormationTram; // bascule l'état
+            refreshTable(); // rafraîchit le tableau pour appliquer le filtre
+        });
+
+        // Mise en page à gauche du bouton
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        panel.setOpaque(false);
+        panel.add(filtreBtn);
+
+        return panel;
+    }
+
     private JComponent tableau() {
         String[] colonnes = {"ID", "Utilisateur", "Prénom", "Nom", "Formation Tram", "Actions"};
 
@@ -58,7 +106,14 @@ public class Chauffeurs extends JPanel {
         try {
             Connection connexion = Connexion.getConnexion();
             ChauffeurDAO dao = new ChauffeurDAO(connexion);
-            List<Chauffeur> chauffeurs = dao.findAll();
+            List<Chauffeur> chauffeurs;
+
+            if (filtreFormationTram) {
+                chauffeurs = dao.getChauffeursAvecFormationTram();
+            } else {
+                chauffeurs = dao.findAll();
+            }
+
 
             donnees = new Object[chauffeurs.size()][6];
 
@@ -99,12 +154,27 @@ public class Chauffeurs extends JPanel {
         tableau.setSelectionBackground(new Color(83, 83, 83));
         tableau.setSelectionForeground(Color.WHITE);
 
+
+        for (int i = 0; i <= 3; i++) {
+            tableau.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value,
+                                                               boolean isSelected, boolean hasFocus,
+                                                               int row, int column) {
+                    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    c.setFont(new Font(customFont.getFontName(), Font.PLAIN, 14)); // applique la police directement
+                    setHorizontalAlignment(SwingConstants.CENTER);      // centre le texte
+                    return c;
+                }
+            });
+        }
+
         tableau.setShowGrid(true);
         tableau.setGridColor(Color.LIGHT_GRAY);
 
         tableau.getTableHeader().setBackground(new Color(30, 30, 30));
         tableau.getTableHeader().setForeground(Color.WHITE);
-        tableau.getTableHeader().setFont(customFont.deriveFont(Font.BOLD, 16f));
+        tableau.getTableHeader().setFont(customFont.deriveFont(Font.BOLD, 18f));
 
         // Centrer le texte dans toutes les colonnes Object directement
         tableau.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -121,10 +191,58 @@ public class Chauffeurs extends JPanel {
         return new JScrollPane(tableau);
     }
 
+    private Component addButton() {
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setOpaque(false); // garde le fond sombre
+        JButton addButton = new JButton("Ajouter un chauffeur") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Remplir le fond avec couleur
+                g2.setColor(violet); // violet
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); // 20 px d’arrondi
+
+                // Dessiner le texte centré
+                g2.setColor(getForeground());
+                FontMetrics fm = g2.getFontMetrics();
+                int x = (getWidth() - fm.stringWidth(getText())) / 2;
+                int y = (getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+                g2.drawString(getText(), x, y);
+
+                g2.dispose();
+            }
+        };
+
+        addButton.setPreferredSize(new Dimension(200, 40));
+        addButton.setBorderPainted(false);
+        addButton.setFocusPainted(false);
+
+        addButton.setFont(new Font(customFont.getFontName(), Font.PLAIN, 14));
+
+        bottomPanel.add(addButton);
+
+        addButton.addActionListener(e -> {
+            try {
+                AjouterChauffeurDialog.show(this, tableau);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Erreur lors de l'ajout du chauffeur",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        return bottomPanel;
+    }
+
     public void refreshTable() {
         removeAll();
-        add(titre(), BorderLayout.NORTH);
-        add(tableau(), BorderLayout.CENTER);
+
+        placeElements();
+
         revalidate();
         repaint();
     }

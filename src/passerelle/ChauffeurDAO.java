@@ -16,6 +16,28 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
         super(connexion);
     }
 
+    public List<Chauffeur> getChauffeursAvecFormationTram() throws DAOException {
+        List<Chauffeur> chauffeurs = new ArrayList<>();
+        String query = "SELECT * FROM Chauffeur WHERE formation_tram = 1";
+
+        try (PreparedStatement ps = connexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            UtilisateurDAO userDAO = new UtilisateurDAO(connexion);
+
+            while (rs.next()) {
+                chauffeurs.add(new Chauffeur(
+                        rs.getInt("idChauffeur"),
+                        rs.getBoolean("formation_tram"),
+                        userDAO.find(rs.getString("username"))
+                ));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur récupération de tous les chauffeurs", e);
+        }
+        return chauffeurs;
+    }
+
     @Override
     public Chauffeur create(Chauffeur unChauffeur) throws DAOException {
         String query = "INSERT INTO Chauffeur (formation_tram, username) VALUES (?, ?)";
@@ -87,8 +109,6 @@ public class ChauffeurDAO extends DAO<Chauffeur> {
         }
         return chauffeurs;
     }
-
-
 
     @Override
     public boolean update(Chauffeur unChauffeur) throws DAOException {

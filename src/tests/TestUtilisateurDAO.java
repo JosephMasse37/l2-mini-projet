@@ -86,6 +86,22 @@ public class TestUtilisateurDAO {
     }
 
     @Test
+    @DisplayName("Récupération de toutes les Dessertes")
+    void testGetUtilisateursNonChauffeur() throws DAOException {
+        // Appel méthode
+        List<Utilisateur> tousLesUtilisateurs = utilisateurDAO.getUtilisateursNonChauffeur();
+
+        // Vérification de la conformité de la liste
+        assertNotNull(tousLesUtilisateurs, "La liste ne doit pas être null");
+        assertFalse(tousLesUtilisateurs.isEmpty(), "La liste devrait contenir au moins un utilisateur");
+        System.out.println(" Nombre de Dessertes trouvés : " + tousLesUtilisateurs.size());
+
+        for (Utilisateur unUtilisateur : tousLesUtilisateurs) {
+            System.out.println("Vérification Utilisateur : " + unUtilisateur);
+        }
+    }
+
+    @Test
     @DisplayName("Suppression d'une Desserte")
     void testDelete() throws DAOException {
         // Insertion
@@ -93,7 +109,7 @@ public class TestUtilisateurDAO {
         System.out.println("Utilisateur crée avec " + utilisateurCree);
 
         // Vérification de la conformité de l'objet envoyé
-        assertNotNull(utilisateurCree, "La conduite créée ne devrait pas être null");
+        assertNotNull(utilisateurCree, "L'utilisateur créée ne devrait pas être null");
 
         // Suppression BDD
         boolean delete = utilisateurDAO.delete(utilisateurCree);
@@ -111,7 +127,7 @@ public class TestUtilisateurDAO {
 
         // Vérification de la conformité de la liste
         assertNotNull(tousLesUtilisateurs, "La liste ne doit pas être null");
-        assertFalse(tousLesUtilisateurs.isEmpty(), "La liste devrait contenir au moins une conduite");
+        assertFalse(tousLesUtilisateurs.isEmpty(), "La liste devrait contenir au moins un utilisateur");
         System.out.println(" Nombre de Dessertes trouvés : " + tousLesUtilisateurs.size());
 
         for (Utilisateur unUtilisateur : tousLesUtilisateurs) {

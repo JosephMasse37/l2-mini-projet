@@ -53,6 +53,33 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
         return null;
     }
 
+    public List<Utilisateur> getUtilisateursNonChauffeur() throws DAOException {
+        List<Utilisateur> lesUsers = new ArrayList<>();
+
+        // Execution de requetes
+        String req = "SELECT username, prenom, nom, username, password FROM utilisateur " +
+                "WHERE username NOT IN (SELECT username FROM chauffeur);";
+        ResultSet rs = null;
+        try {
+            try(PreparedStatement ps = connexion.prepareStatement(req)) {
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    String nom = rs.getString("nom");
+                    String prenom = rs.getString("prenom");
+                    String password_ = rs.getString("password");
+                    String username_ = rs.getString("username");
+
+                    lesUsers.add(new Utilisateur(username_, password_, prenom, nom));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur requête SQL");
+            e.printStackTrace();
+        }
+        return lesUsers;
+    }
+
     public Utilisateur find(String username) throws DAOException {
         String req = "SELECT username, password, prenom, nom FROM utilisateur WHERE username = ?";
 
