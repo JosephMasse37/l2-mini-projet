@@ -18,10 +18,10 @@ public class Menu extends JPanel { // = private JPanel
             {"Vue d'ensemble"},
             {"Réseau & Trafic", "Bus", "Tram"},
             {"Clients"},
-            {"Reseau & Bornes"},
-            {"Vehicule"},
+            {"Réseau & Bornes"},
+            {"Véhicules"},
             {"Chauffeurs"},
-            {"Map"}
+            {"Carte"}
     };
 
     //lui qui lance tt

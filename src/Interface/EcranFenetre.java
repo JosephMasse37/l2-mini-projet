@@ -60,6 +60,10 @@ public class EcranFenetre extends JFrame implements MenuEvent {
                 }
                 break;
 
+            case 5:
+                afficherMap();
+                break;
+
             case 6:
                 afficherMap();
                 break;
