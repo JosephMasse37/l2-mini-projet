@@ -1,5 +1,6 @@
 package Interface;
 
+import LoireUrbanisme.chauffeurs.Chauffeurs;
 import LoireUrbanisme.map.Map;
 import LoireUrbanisme.menu.MenuAction;
 import LoireUrbanisme.menu.MenuEvent;
@@ -61,7 +62,9 @@ public class EcranFenetre extends JFrame implements MenuEvent {
                 break;
 
             case 5:
-                afficherMap();
+                Chauffeurs chauffeurs = new Chauffeurs();
+
+                zoneContenu.add(chauffeurs, BorderLayout.CENTER);
                 break;
 
             case 6:

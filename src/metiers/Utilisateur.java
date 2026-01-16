@@ -69,6 +69,6 @@ public class Utilisateur {
 
     @Override
     public String toString() {
-        return "USERNAME " + username + " | Identité : " + prenom + " " + nom;
+        return "Username : " + username + " | Identité : " + prenom + " " + nom;
     }
 }
