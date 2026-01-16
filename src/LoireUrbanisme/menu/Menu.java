@@ -1,7 +1,9 @@
 package LoireUrbanisme.menu;
 
+import Interface.EcranFenetre;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.util.UIScale;
+import metiers.Utilisateur;
 
 import java.awt.*;
 import java.io.File;
@@ -14,6 +16,10 @@ public class Menu extends JPanel { // = private JPanel
     Font customFont;
     private List<MenuEvent> events = new ArrayList<>();
 
+    private final Utilisateur utilisateurConnecte;
+    private JLabel userNameLabel = new JLabel("");
+    private final EcranFenetre appli;
+
     private final String menuItems[][] = {
             {"Vue d'ensemble"},
             {"Réseau & Trafic", "Bus", "Tram"},
@@ -25,7 +31,10 @@ public class Menu extends JPanel { // = private JPanel
     };
 
     //lui qui lance tt
-    public Menu() {
+    public Menu(Utilisateur utilisateurConnecte, EcranFenetre appli) {
+        this.utilisateurConnecte = utilisateurConnecte;
+        this.appli = appli;
+
         init();
     }
 
@@ -84,6 +93,55 @@ public class Menu extends JPanel { // = private JPanel
             item.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(item);
         }
+
+        // Utilisateur connecté + bouton déconnexion
+        add(Box.createVerticalGlue());
+
+        add(utilisateurPanel());
+
+        add(Box.createVerticalStrut(10));
+
+    }
+
+    private JComponent utilisateurPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.putClientProperty("FlatLaf.style",
+                "background: #000000; " +
+                "arc: 20; " +
+                "border: 10,10,10,10"
+        );
+
+        userNameLabel = new JLabel(utilisateurConnecte.getPrenom() + " " + utilisateurConnecte.getNom());
+        userNameLabel.setFont(customFont.deriveFont(Font.PLAIN, 14f));
+        userNameLabel.setForeground(new Color(165, 55, 255));
+        userNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton logoutButton = new JButton("Déconnexion");
+        logoutButton.setFont(customFont.deriveFont(Font.PLAIN, 13f));
+        logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        logoutButton.putClientProperty(
+                FlatClientProperties.STYLE,
+                "arc: 15; background: #4F378A"
+        );
+
+        logoutButton.addActionListener(e -> {
+            appli.dispose();
+        });
+
+        panel.add(userNameLabel);
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(logoutButton);
+
+        return panel;
+    }
+
+    public void setUserText(Utilisateur user) {
+        userNameLabel.setText(user.getPrenom() + " " + user.getNom());
     }
 
     public void addMenuEvent(MenuEvent event) {

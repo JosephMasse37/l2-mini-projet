@@ -7,6 +7,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.List;
 
+import LoireUrbanisme.menu.Menu;
 import metiers.Chauffeur;
 import passerelle.ChauffeurDAO;
 import passerelle.Connexion;
@@ -18,9 +19,13 @@ public class Chauffeurs extends JPanel {
     private Color violet = new Color(165, 55, 255);
     private JTable tableau;
 
+    private Menu menu;
+
     private boolean filtreFormationTram = false;
 
-    public Chauffeurs() {
+    public Chauffeurs(Menu menu) {
+        this.menu = menu;
+
         init();
     }
 
@@ -186,7 +191,7 @@ public class Chauffeurs extends JPanel {
 
         // Ajouter les boutons
         tableau.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
-        tableau.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(tableau, this));
+        tableau.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(tableau, this, menu));
 
         return new JScrollPane(tableau);
     }

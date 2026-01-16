@@ -1,6 +1,7 @@
 package LoireUrbanisme.chauffeurs;
 
 import passerelle.DAOException;
+import LoireUrbanisme.menu.Menu;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -14,7 +15,7 @@ class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
     private int currentRow;
     private JTable table;
 
-    public ButtonEditor(JTable table, Chauffeurs parentPanel) {
+    public ButtonEditor(JTable table, Chauffeurs parentPanel, Menu menu) {
         this.table = table;
         this.parentPanel = parentPanel;
 
@@ -30,7 +31,7 @@ class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         editButton.addActionListener(e -> {
             int id = (int) table.getValueAt(currentRow, 0); // ID caché
             try {
-                ChauffeursAction.editChauffeur(id, parentPanel);
+                ChauffeursAction.editChauffeur(id, parentPanel, menu);
             } catch (DAOException ex) {
                 throw new RuntimeException(ex);
             }

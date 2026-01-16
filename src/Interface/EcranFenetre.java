@@ -15,10 +15,10 @@ import java.util.List;
 import LoireUrbanisme.menu.Menu;
 import metiers.Arret;
 import metiers.Ligne;
+import metiers.Utilisateur;
 import passerelle.*;
 
 public class EcranFenetre extends JFrame implements MenuEvent {
-
     private Menu menu;
     private JPanel zoneContenu;
 
@@ -27,15 +27,14 @@ public class EcranFenetre extends JFrame implements MenuEvent {
     private LigneDAO ligneDAO = new LigneDAO(connexion);
     private DessertDAO dessertDAO = new DessertDAO(connexion);
 
-    public EcranFenetre() {
-
+    public EcranFenetre(Utilisateur utilisateurConnecte) {
         setTitle("LoireUrbanisme - Système de Gestion des Transports");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1720, 980);
         setLocationRelativeTo(null);
 
         setLayout(new BorderLayout());
-        menu = new Menu();
+        menu = new Menu(utilisateurConnecte, this);
         menu.addMenuEvent(this);
         zoneContenu = new JPanel(new BorderLayout(15, 15));
 
@@ -62,7 +61,7 @@ public class EcranFenetre extends JFrame implements MenuEvent {
                 break;
 
             case 5:
-                Chauffeurs chauffeurs = new Chauffeurs();
+                Chauffeurs chauffeurs = new Chauffeurs(menu);
 
                 zoneContenu.add(chauffeurs, BorderLayout.CENTER);
                 break;
@@ -192,21 +191,5 @@ public class EcranFenetre extends JFrame implements MenuEvent {
             map.setLignesSelectionnees(selectionnees);
         }
         map.afficherReseau(arrets, lignes);
-    }
-
-    public static void main(String[] args) {
-        try {
-            FlatDarkLaf.setup();
-        } catch (Exception e) {
-            System.err.println("Échec au chargement du thème");
-        }
-
-        EcranFenetre fenetreMain = new EcranFenetre();
-
-        // Lancement
-        SwingUtilities.invokeLater(() -> {
-            fenetreMain.afficherVueEnsemble();
-            fenetreMain.setVisible(true);
-        });
     }
 }

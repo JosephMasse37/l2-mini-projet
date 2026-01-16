@@ -6,16 +6,18 @@ import passerelle.ChauffeurDAO;
 import passerelle.Connexion;
 import passerelle.DAOException;
 import passerelle.UtilisateurDAO;
+import LoireUrbanisme.menu.Menu;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 public class ChauffeursAction {
     private static ChauffeurDAO chauffeurDAO = new ChauffeurDAO(Connexion.getConnexion());
     private static UtilisateurDAO utilisateurDAO = new UtilisateurDAO(Connexion.getConnexion());
 
-    public static void editChauffeur(int idChauffeur, JPanel parentPanel) throws DAOException {
+    public static void editChauffeur(int idChauffeur, JPanel parentPanel, Menu menu) throws DAOException {
         Chauffeur c = chauffeurDAO.find(idChauffeur);
 
         if (c == null) {
@@ -73,6 +75,10 @@ public class ChauffeursAction {
                 JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
+            // Sauvegarde des anciennes
+            String ancienPrenom = c.getUtilisateur().getPrenom();
+            String ancienNom = c.getUtilisateur().getNom();
+
             // Récupérer les nouvelles valeurs
             Utilisateur selectedUser = (Utilisateur) utilisateurCombo.getSelectedItem();
             String prenom = prenomField.getText().trim();
@@ -85,16 +91,22 @@ public class ChauffeursAction {
             c.getUtilisateur().setNom(nom);
             c.setFormation_tram(formationTram);
 
-            try {
-                // Sauvegarder en base
-                chauffeurDAO.update(c);
-                utilisateurDAO.update(c.getUtilisateur());
+            // Sauvegarder en base
+            boolean r1 = chauffeurDAO.update(c);
+            boolean r2 = utilisateurDAO.update(c.getUtilisateur());
 
+            Utilisateur newUser = utilisateurDAO.find(c.getUtilisateur().getUsername());
+
+            if (!Objects.equals(ancienPrenom, newUser.getPrenom()) || !Objects.equals(newUser.getNom(), ancienNom)) {
+                menu.setUserText(newUser);
+            }
+
+            if (r1 && r2) {
                 JOptionPane.showMessageDialog(parentPanel,
                         "Le chauffeur a été modifié avec succès.",
                         "Modification réussie",
                         JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception e) {
+            } else {
                 JOptionPane.showMessageDialog(parentPanel,
                         "Le chauffeur n'a pas pu être modifié.",
                         "Modification échouée",
