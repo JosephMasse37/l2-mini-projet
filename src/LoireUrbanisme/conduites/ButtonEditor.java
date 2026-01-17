@@ -8,6 +8,7 @@ import passerelle.DAOException;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
+import java.time.LocalDateTime;
 
 class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
     private final JPanel panel = new JPanel();
@@ -31,9 +32,13 @@ class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         panel.add(deleteButton, gbc);
 
         editButton.addActionListener(e -> {
-            int id = (int) table.getValueAt(currentRow, 0); // ID caché
+            int idLigne = (int) table.getValueAt(currentRow, 6);
+            int numVehicule = (int) table.getValueAt(currentRow, 7);
+            int idChauffeur = (int) table.getValueAt(currentRow, 8);
+            LocalDateTime dateHeureConduite = (LocalDateTime) table.getValueAt(currentRow, 9);
+
             try {
-                ConduitesAction.editChauffeur(id, parentPanel);
+                ConduitesAction.editConduite(idLigne, numVehicule, idChauffeur, dateHeureConduite, parentPanel);
             } catch (DAOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -41,11 +46,14 @@ class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         });
 
         deleteButton.addActionListener(e -> {
-            int id = (int) table.getValueAt(currentRow, 0); // ID caché
+            int idLigne = (int) table.getValueAt(currentRow, 6);
+            int numVehicule = (int) table.getValueAt(currentRow, 7);
+            int idChauffeur = (int) table.getValueAt(currentRow, 8);
+            LocalDateTime dateHeureConduite = (LocalDateTime) table.getValueAt(currentRow, 9);
 
             int response = JOptionPane.showConfirmDialog(
                     parentPanel, // parent pour centrer la boîte
-                    "Voulez-vous vraiment supprimer ce chauffeur ?",
+                    "Voulez-vous vraiment supprimer cette conduite ?",
                     "Confirmation de suppression",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE
@@ -53,7 +61,7 @@ class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
 
             if (response == JOptionPane.YES_OPTION) {
                 try {
-                    ChauffeursAction.deleteChauffeur(id, parentPanel);
+                    ConduitesAction.deleteConduite(idLigne, numVehicule, idChauffeur, dateHeureConduite, parentPanel);
                 } catch (DAOException ex) {
                     throw new RuntimeException(ex);
                 }
