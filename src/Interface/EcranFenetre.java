@@ -41,6 +41,8 @@ public class EcranFenetre extends JFrame implements MenuEvent {
 
         add(menu, BorderLayout.WEST);
         add(zoneContenu, BorderLayout.CENTER);
+
+        afficherVueEnsemble();
     }
 
     @Override
