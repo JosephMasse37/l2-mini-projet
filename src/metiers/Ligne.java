@@ -132,5 +132,10 @@ public class Ligne {
         this.duree = duree;
         this.couleur = couleur;
     }
+
+    @Override
+    public String toString() {
+        return "Ligne " + getLibelle();
+    }
 }
 

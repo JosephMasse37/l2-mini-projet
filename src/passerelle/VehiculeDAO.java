@@ -184,6 +184,90 @@ public class VehiculeDAO extends DAO<Vehicule> {
         }
         return vehicules;
     }
+
+    public List<Bus> getBus() throws DAOException {
+        List<Bus> vehicules = new ArrayList<>();
+        Bus vehicule = null;
+        String query = "SELECT v.*, t.libelle as typeLibelle FROM vehicule v " +
+                "JOIN typeVehicule t ON v.idTypeVehicule = t.idTypeVehicule " +
+                "WHERE t.idTypeVehicule = 1";
+
+        // try-with-ressources to auto-close resources (ps and rs)
+        try (PreparedStatement ps = connexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                //data from all vehicule types
+                int numVehicule = rs.getInt("numVehicule");
+                String marque = rs.getString("marque");
+                String modele = rs.getString("modele");
+                LocalDate dateFabrication = rs.getDate("dateFabrication").toLocalDate();
+                LocalDate dateMiseEnService = rs.getDate("dateMiseEnService").toLocalDate();
+                LocalDateTime dateHeureDerniereMaintenance = rs.getTimestamp("dateHeureDerniereMaintenance").toLocalDateTime();
+
+                //getting the type of vehicule
+                String typeLibelle = rs.getString("typeLibelle");
+                //instantiate the right subclass based on type
+                if ("Bus".equalsIgnoreCase(typeLibelle)) {
+                    vehicule = new Bus(numVehicule, marque, modele, dateFabrication, dateMiseEnService, dateHeureDerniereMaintenance);
+                } else {
+                    System.err.println("Unknown vehicle type: " + typeLibelle);
+                    continue; // skip this vehicule
+                }
+
+                int idType = rs.getInt("idTypeVehicule");
+                TypeVehicule typeVehicule = new TypeVehicule(idType, typeLibelle);
+                vehicule.setTypevehicule(typeVehicule);
+
+                // Create an instance of Vehicule to add it to the list
+                vehicules.add(vehicule);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error while fetching all vehicules", e);
+        }
+        return vehicules;
+    }
+
+    public List<Tram> getTram() throws DAOException {
+        List<Tram> vehicules = new ArrayList<>();
+        Tram vehicule = null;
+        String query = "SELECT v.*, t.libelle as typeLibelle FROM vehicule v " +
+                "JOIN typeVehicule t ON v.idTypeVehicule = t.idTypeVehicule " +
+                "WHERE t.idTypeVehicule = 2";
+
+        // try-with-ressources to auto-close resources (ps and rs)
+        try (PreparedStatement ps = connexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                //data from all vehicule types
+                int numVehicule = rs.getInt("numVehicule");
+                String marque = rs.getString("marque");
+                String modele = rs.getString("modele");
+                LocalDate dateFabrication = rs.getDate("dateFabrication").toLocalDate();
+                LocalDate dateMiseEnService = rs.getDate("dateMiseEnService").toLocalDate();
+                LocalDateTime dateHeureDerniereMaintenance = rs.getTimestamp("dateHeureDerniereMaintenance").toLocalDateTime();
+
+                //getting the type of vehicule
+                String typeLibelle = rs.getString("typeLibelle");
+                //instantiate the right subclass based on type
+                if ("Tram".equalsIgnoreCase(typeLibelle)) {
+                    vehicule = new Tram(numVehicule, marque, modele, dateFabrication, dateMiseEnService, dateHeureDerniereMaintenance);
+                } else {
+                    System.err.println("Unknown vehicle type: " + typeLibelle);
+                    continue; // skip this vehicule
+                }
+
+                int idType = rs.getInt("idTypeVehicule");
+                TypeVehicule typeVehicule = new TypeVehicule(idType, typeLibelle);
+                vehicule.setTypevehicule(typeVehicule);
+
+                // Create an instance of Vehicule to add it to the list
+                vehicules.add(vehicule);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error while fetching all vehicules", e);
+        }
+        return vehicules;
+    }
     
     @Override
     public Vehicule find(int id1, int id2) throws DAOException {

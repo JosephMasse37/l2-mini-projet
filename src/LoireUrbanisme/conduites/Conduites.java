@@ -1,31 +1,26 @@
-package LoireUrbanisme.chauffeurs;
+package LoireUrbanisme.conduites;
+
+import metiers.ConduitSur;
+import passerelle.ConduitSurDAO;
+import passerelle.Connexion;
+import passerelle.DAOException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.io.File;
-import java.sql.Connection;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import LoireUrbanisme.menu.Menu;
-import metiers.Chauffeur;
-import passerelle.ChauffeurDAO;
-import passerelle.Connexion;
-import passerelle.DAOException;
-
-public class Chauffeurs extends JPanel {
-
+public class Conduites extends JPanel {
     private Font customFont;
-    private final Color violet = new Color(165, 55, 255);
     private JTable tableau;
-
-    private Menu menu;
 
     private boolean filtreFormationTram = false;
 
-    public Chauffeurs(Menu menu) {
-        this.menu = menu;
+    private final Color violet = new Color(165, 55, 255);
 
+    public Conduites() {
         init();
     }
 
@@ -64,7 +59,7 @@ public class Chauffeurs extends JPanel {
     }
 
     private JComponent titre() {
-        JLabel titre = new JLabel("CHAUFFEURS - TABLEAU INFORMATIONNEL");
+        JLabel titre = new JLabel("CONDUITES - TABLEAU INFORMATIONNEL");
         titre.setFont(new Font(customFont.getFontName(), Font.BOLD, 26));
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         return titre;
@@ -104,36 +99,31 @@ public class Chauffeurs extends JPanel {
     }
 
     private JComponent tableau() {
-        String[] colonnes = {"ID", "Utilisateur", "Prénom", "Nom", "Formation Tram", "Actions"};
+        String[] colonnes = {"Ligne", "Vehicule", "Chauffeur", "Date & Heure Départ ligne", "Nombres de validations", "Actions"};
 
         Object[][] donnees = null;
 
         try {
-            Connection connexion = Connexion.getConnexion();
-            ChauffeurDAO dao = new ChauffeurDAO(connexion);
-            List<Chauffeur> chauffeurs;
+            ConduitSurDAO dao = new ConduitSurDAO(Connexion.getConnexion());
+            List<ConduitSur> conduites;
 
-            if (filtreFormationTram) {
-                chauffeurs = dao.getChauffeursAvecFormationTram();
-            } else {
-                chauffeurs = dao.findAll();
-            }
+            conduites = dao.findAll();
 
 
-            donnees = new Object[chauffeurs.size()][6];
+            donnees = new Object[conduites.size()][6];
 
-            for (int i = 0; i < chauffeurs.size(); i++) {
-                Chauffeur c = chauffeurs.get(i);
-                donnees[i][0] = c.getIdChauffeur();
-                donnees[i][1] = c.getUtilisateur().getUsername();
-                donnees[i][2] = c.getUtilisateur().getPrenom();
-                donnees[i][3] = c.getUtilisateur().getNom();
-                donnees[i][4] = c.isFormation_tram() ? "✔" : "❌";
+            for (int i = 0; i < conduites.size(); i++) {
+                ConduitSur c = conduites.get(i);
+                donnees[i][0] = c.getUneLigne().getLibelle();
+                donnees[i][1] = c.getUnVehicule().getNumVehicule();
+                donnees[i][2] = c.getLeChauffeur().getUtilisateur().getPrenom() + " " + c.getLeChauffeur().getUtilisateur().getNom();
+                donnees[i][3] = c.getDateHeureConduite().format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"));
+                donnees[i][4] = c.getNbValidation();
                 donnees[i][5] = ""; // colonne boutons
             }
 
         } catch (DAOException e) {
-            return new JLabel("Erreur chargement chauffeurs");
+            return new JLabel("Erreur chargement conduites");
         }
 
         tableau = new JTable(donnees, colonnes) {
@@ -144,10 +134,6 @@ public class Chauffeurs extends JPanel {
         };
 
         tableau.setRowHeight(40);
-
-        // Cacher la colonne ID
-        tableau.getColumnModel().getColumn(0).setMinWidth(0);
-        tableau.getColumnModel().getColumn(0).setMaxWidth(0);
 
         // Désactiver la sélection
         tableau.setRowSelectionAllowed(false);
@@ -191,7 +177,7 @@ public class Chauffeurs extends JPanel {
 
         // Ajouter les boutons
         tableau.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
-        tableau.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(tableau, this, menu));
+        tableau.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(tableau, this));
 
         return new JScrollPane(tableau);
     }
@@ -199,7 +185,7 @@ public class Chauffeurs extends JPanel {
     private Component addButton() {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setOpaque(false); // garde le fond sombre
-        JButton addButton = new JButton("Ajouter un chauffeur") {
+        JButton addButton = new JButton("Ajouter une conduite") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -230,11 +216,11 @@ public class Chauffeurs extends JPanel {
 
         addButton.addActionListener(e -> {
             try {
-                AjouterChauffeurDialog.show(this, tableau);
+                AjouterConduiteDialog.show(this, tableau);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this,
-                        "Erreur lors de l'ajout du chauffeur",
+                        "Erreur lors de l'ajout de la conduite",
                         "Erreur",
                         JOptionPane.ERROR_MESSAGE);
             }

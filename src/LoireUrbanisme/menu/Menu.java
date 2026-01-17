@@ -29,6 +29,7 @@ public class Menu extends JPanel { // = private JPanel
             {"Réseau & Bornes"},
             {"Véhicules"},
             {"Chauffeurs"},
+            {"Conduites"},
             {"Carte"}
     };
 
