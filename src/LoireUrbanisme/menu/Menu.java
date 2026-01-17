@@ -1,9 +1,11 @@
 package LoireUrbanisme.menu;
 
+import Interface.EcranConnexion;
 import Interface.EcranFenetre;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.util.UIScale;
 import metiers.Utilisateur;
+import passerelle.DAOException;
 
 import java.awt.*;
 import java.io.File;
@@ -131,6 +133,11 @@ public class Menu extends JPanel { // = private JPanel
 
         logoutButton.addActionListener(e -> {
             appli.dispose();
+            try {
+                new EcranConnexion().setVisible(true);
+            } catch (DAOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         panel.add(userNameLabel);
