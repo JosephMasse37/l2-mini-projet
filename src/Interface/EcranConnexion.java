@@ -18,7 +18,7 @@ public class EcranConnexion extends JFrame {
 
     public EcranConnexion() throws DAOException {
 
-        setTitle("LoireUrbanisme - Système de Gestion des Transports");
+        setTitle("LoireUrbanisme - Connexion - Système de Gestion des Transports");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(720, 480);
         setLocationRelativeTo(null);

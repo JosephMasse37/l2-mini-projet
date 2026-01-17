@@ -54,7 +54,7 @@ public class PageConnexion extends JPanel {
     }
 
     private JComponent titre() {
-        JLabel titre = new JLabel("BIENVENUE SUR LOIREURBANISME - CONNEXION");
+        JLabel titre = new JLabel("BIENVENUE SUR LOIREURBANISME");
         titre.setFont(new Font(customFont.getFontName(), Font.BOLD, 26));
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setAlignmentX(Component.CENTER_ALIGNMENT);
