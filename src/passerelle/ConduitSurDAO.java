@@ -307,7 +307,8 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
         ResultSet rs = null;
         try {
             st = cn.createStatement();
-            String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur";
+            String req = "SELECT idLigne, idChauffeur, numVehicule, dateHeureConduite, nbValidation FROM conduitsur " +
+                    "ORDER BY idLigne, dateHeureConduite, numVehicule, idChauffeur";
             rs = st.executeQuery(req);
 
             while (rs.next()) {

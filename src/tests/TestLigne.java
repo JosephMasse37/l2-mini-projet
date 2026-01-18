@@ -68,6 +68,13 @@ class TestLigne {
     }
 
     @Test
+    void testSetCouleur() {
+        ligne.setCouleur("0x000000");
+
+        assertEquals("0x000000", ligne.getCouleur());
+    }
+
+    @Test
     void testAddArretDesservi() {
         ligne.addArretDesservi(arret1);
         ligne.addArretDesservi(arret2);

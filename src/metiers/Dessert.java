@@ -3,6 +3,7 @@ package metiers;
 public class Dessert {
     private Arret unArret;
     private Ligne uneLigne;
+    private int ordre;
 
     public Arret getUnArret() {
         return unArret;
@@ -20,9 +21,18 @@ public class Dessert {
         this.uneLigne = uneLigne;
     }
 
-    public Dessert(Arret unArret, Ligne uneLigne) {
+    public int getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(int ordre) {
+        this.ordre = ordre;
+    }
+
+    public Dessert(Arret unArret, Ligne uneLigne, int ordre) {
         this.unArret = unArret;
         this.uneLigne = uneLigne;
+        this.ordre = ordre;
 
         unArret.addLigneDesservie(uneLigne);
         uneLigne.addArretDesservi(unArret);
@@ -30,6 +40,6 @@ public class Dessert {
 
     @Override
     public String toString() {
-        return "Arrêt : " + unArret.getNom() + " desservi par la Ligne " + uneLigne.getLibelle();
+        return "Arrêt : " + unArret.getNom() + " desservi par la Ligne " + uneLigne.getLibelle() + " est en " + ordre + "è.";
     }
 }

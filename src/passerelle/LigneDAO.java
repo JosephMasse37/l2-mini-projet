@@ -25,24 +25,25 @@ import metiers.TypeLigne;
 
         // creer nv
         public Ligne create(Ligne uneLigne) throws DAOException {
-            String query = "INSERT INTO ligne (libelle, idTypeLigne, Arret_Depart, Arret_Fin, duree) VALUES (?,?,?,?,?)";
+            String query = "INSERT INTO ligne (libelle, idTypeLigne, Arret_Depart, Arret_Fin, duree, couleur) VALUES (?,?,?,?,?,?)";
 
             try (PreparedStatement ps = connexion.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
-                                                                              // ^^ autoincr
+                // autoincr
                 ps.setString(1, uneLigne.getLibelle());
                 ps.setInt(2, uneLigne.getTypeLigne().getIdTypeLigne());
                 ps.setInt(3, uneLigne.getArretDepart().getIdArret());
                 ps.setInt(4, uneLigne.getArretArrive().getIdArret());
                 ps.setInt(5, uneLigne.getDuree());
+                ps.setString(6, uneLigne.getCouleur());
 
                 int lignesModifiees = ps.executeUpdate();
 
                 if (lignesModifiees == 0) {
                     throw new DAOException("Échec de la création de la borne.");
                 }
-                // bloc ci dessous pas executé si if vrai
+                // bloc ci-dessous pas executé si if vrai
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                    //si id a bien été crée
+                    //si id a bien été créé
                     if (generatedKeys.next()) {
                         uneLigne.setIdLigne(generatedKeys.getInt(1)); //1 = le num de la colonne, car la seule colonne ds ce ResultSet)
                     } else {
@@ -60,7 +61,7 @@ import metiers.TypeLigne;
 
         public Ligne find(int IdLigne) throws DAOException {
 
-            String query = "SELECT idLigne, libelle, idTypeLigne, Arret_Depart, Arret_Fin, duree FROM ligne WHERE idLigne = ?";
+            String query = "SELECT idLigne, libelle, idTypeLigne, Arret_Depart, Arret_Fin, duree, couleur FROM ligne WHERE idLigne = ?";
 
             try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
@@ -79,9 +80,10 @@ import metiers.TypeLigne;
                         Arret arretDepart = arretDAO.find(rs.getInt("Arret_Depart"));
                         Arret arretArrive = arretDAO.find(rs.getInt("Arret_Fin"));
                         int duree = rs.getInt("duree");
+                        String couleur = rs.getString("couleur");
 
 
-                        return new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive,duree);
+                        return new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive, duree, couleur);
                     } else {
                         return null; // aucune ligne trouvé
                     }
@@ -97,7 +99,7 @@ import metiers.TypeLigne;
         public List<Ligne> findAll() throws DAOException {
 
             List<Ligne> lignes = new ArrayList<>();
-            String query = "SELECT idLigne, libelle, idTypeLigne, Arret_Depart, Arret_Fin, duree FROM ligne";
+            String query = "SELECT idLigne, libelle, idTypeLigne, Arret_Depart, Arret_Fin, duree, couleur FROM ligne";
             try (PreparedStatement ps = connexion.prepareStatement(query);
                  ResultSet rs = ps.executeQuery()) {
 
@@ -112,8 +114,10 @@ import metiers.TypeLigne;
                     Arret arretDepart = arretDAO.find(rs.getInt("Arret_Depart"));
                     Arret arretArrive = arretDAO.find(rs.getInt("Arret_Fin"));
                     int duree = rs.getInt("duree");
+                    String couleur = rs.getString("couleur");
 
-                    Ligne ligne = new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive,duree);
+
+                    Ligne ligne = new Ligne(idLigne, libelle, typeLigne, arretDepart, arretArrive, duree, couleur);
                     lignes.add(ligne);
 
                 }
@@ -126,7 +130,7 @@ import metiers.TypeLigne;
 
         public boolean update(Ligne uneLigne) throws DAOException {
 
-            String query = "UPDATE ligne SET libelle=?, idTypeLigne=?, Arret_Depart=?, Arret_Fin=?, duree=? WHERE idLigne = ?";
+            String query = "UPDATE ligne SET libelle=?, idTypeLigne=?, Arret_Depart=?, Arret_Fin=?, duree=?, couleur=? WHERE idLigne = ?";
             try (PreparedStatement ps = connexion.prepareStatement(query)) {
 
                 ps.setString(1, uneLigne.getLibelle());
@@ -134,7 +138,8 @@ import metiers.TypeLigne;
                 ps.setInt(3, uneLigne.getArretDepart().getIdArret());
                 ps.setInt(4, uneLigne.getArretArrive().getIdArret());
                 ps.setInt(5,uneLigne.getDuree());
-                ps.setInt(6, uneLigne.getIdLigne());
+                ps.setString(6,uneLigne.getCouleur());
+                ps.setInt(7, uneLigne.getIdLigne());
 
                 int lignesModifiees = ps.executeUpdate();
 
@@ -184,8 +189,8 @@ import metiers.TypeLigne;
                                 typeDAO.find(rs.getInt("idTypeLigne")),
                                 arretDAO.find(rs.getInt("Arret_Depart")),
                                 arretDAO.find(rs.getInt("Arret_Fin")),
-                                rs.getInt("duree")
-
+                                rs.getInt("duree"),
+                                rs.getString("couleur")
                                 ));
                     }
                 }

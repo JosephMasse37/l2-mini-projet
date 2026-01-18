@@ -59,7 +59,7 @@ public class TestDessertDAO {
         Ligne laLigne = ligneDAO.find(6);
 
         // Insertion
-        Dessert dessertecreee = dessertDAO.create(new Dessert(lArret, laLigne));
+        Dessert dessertecreee = dessertDAO.create(new Dessert(lArret, laLigne, 1));
         System.out.println("Desserte créée avec " + dessertecreee);
 
         // Vérification de la conformité de l'objet envoyé
@@ -142,7 +142,7 @@ public class TestDessertDAO {
         Ligne laLigne = ligneDAO.find(1);
 
         // Insertion
-        Dessert desserteCreee = dessertDAO.create(new Dessert(lArret, laLigne));
+        Dessert desserteCreee = dessertDAO.create(new Dessert(lArret, laLigne, 1));
         System.out.println("Desserte crée avec " + desserteCreee);
 
         // Vérification de la conformité de l'objet envoyé
