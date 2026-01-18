@@ -137,5 +137,12 @@ public class Ligne {
     public void setDuree(int duree) {
         this.duree = duree;
     }
+
+    public String getTrajet() {
+        if (arretDepart != null && arretArrive != null) {
+            return arretDepart.getNom() + " -> " + arretArrive.getNom();
+        }
+        return "Trajet non défini";
+    }
 }
 

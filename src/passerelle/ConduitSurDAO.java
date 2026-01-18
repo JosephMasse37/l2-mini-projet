@@ -338,4 +338,110 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
 
         return null;
     }
+
+    public String getStatutLigne(int idLigne) {
+        String statut = "HORS SERVICE";
+
+        String sql = "SELECT COUNT(*) FROM conduitsur WHERE idLigne = ?";
+
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setInt(1, idLigne);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    statut = "EN SERVICE";
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération du statut pour la ligne " + idLigne);
+            e.printStackTrace();
+        }
+        return statut;
+    }
+
+    public int getIdChauffeurPourLigne(int idLigne) throws DAOException {
+        String query = "SELECT idChauffeur FROM ConduitSur WHERE idLigne = ?";
+
+        try (PreparedStatement ps = connexion.prepareStatement(query)) {
+            ps.setInt(1, idLigne);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("idChauffeur");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération de l'ID chauffeur", e);
+        }
+        return -1;
+    }
+
+    public String getVehiculeId(int idLigne) throws DAOException {
+        // Remplacement de idVehicule par numVehicule
+        String query = "SELECT numVehicule FROM conduitsur WHERE idLigne = ? ORDER BY dateHeureConduite DESC LIMIT 1";
+
+        try (PreparedStatement ps = connexion.prepareStatement(query)) {
+            ps.setInt(1, idLigne);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // On récupère numVehicule (int dans la BD, mais on peut le retourner en String)
+                    return String.valueOf(rs.getInt("numVehicule"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération du numéro de véhicule", e);
+        }
+        return "INDISPONIBLE";
+    }
+
+    public int getNbValidationsJour(int idLigne) {
+        int total = 0;
+        String sql = "SELECT SUM(nbValidation) FROM conduitsur " +
+                "WHERE idLigne = ? AND DATE(dateHeureConduite) = CURDATE()";
+
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setInt(1, idLigne);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    public String getEvolutionValidations(int idLigne) {
+        double aujourdhui = 0;
+        double hier = 0;
+
+        //NEED DIFF
+        String sqlAuj = "SELECT SUM(nbValidation) FROM conduitsur WHERE idLigne = ? AND DATE(dateHeureConduite) = CURDATE()";
+        String sqlHier = "SELECT SUM(nbValidation) FROM conduitsur WHERE idLigne = ? AND DATE(dateHeureConduite) = SUBDATE(CURDATE(), 1)";
+
+        try {
+            try (PreparedStatement ps = connexion.prepareStatement(sqlAuj)) {
+                ps.setInt(1, idLigne);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) aujourdhui = rs.getDouble(1);
+            }
+            // recup hier
+            try (PreparedStatement ps = connexion.prepareStatement(sqlHier)) {
+                ps.setInt(1, idLigne);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) hier = rs.getDouble(1);
+            }
+
+            if (hier == 0) return "+0%"; // evite division par zéro
+
+            //formule taux de croissance
+            double evolution = ((aujourdhui - hier) / hier) * 100;
+            String signe = (evolution >= 0) ? "+" : ""; //pas - needed car deja inclus
+            return signe + String.format("%.1f", evolution) + "%"; // on LIMITE chiff after ","
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "+0%";
+        }
+    }
 }
