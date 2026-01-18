@@ -20,6 +20,7 @@ import metiers.Arret;
 import metiers.Ligne;
 import metiers.Utilisateur;
 import metiers.Vehicule;
+import metiers.ConduitSur;
 import passerelle.*;
 
 public class EcranFenetre extends JFrame implements MenuEvent {
@@ -32,6 +33,7 @@ public class EcranFenetre extends JFrame implements MenuEvent {
     private DessertDAO dessertDAO = new DessertDAO(connexion);
     private ClientDAO clientDAO = new ClientDAO(connexion);
     private VehiculeDAO vehiculeDAO = new VehiculeDAO(connexion);
+    private ConduitSurDAO conduitSurDAO = new ConduitSurDAO(connexion);
 
     public EcranFenetre(Utilisateur utilisateurConnecte) {
         setTitle("LoireUrbanisme - Système de Gestion des Transports");
@@ -73,7 +75,7 @@ public class EcranFenetre extends JFrame implements MenuEvent {
                 break;
 
             case 4:
-                zoneContenu.add(new PanelVehicules(vehiculeDAO), BorderLayout.CENTER);
+                zoneContenu.add(new PanelVehicules(vehiculeDAO, conduitSurDAO), BorderLayout.CENTER);
                 break;
 
             case 5:

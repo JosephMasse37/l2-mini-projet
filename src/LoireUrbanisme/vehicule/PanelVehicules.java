@@ -8,335 +8,330 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-// IMPORTS RÉELS
 import metiers.Vehicule;
 import metiers.Bus;
 import metiers.Tram;
+import metiers.TypeVehicule;
+import metiers.ConduitSur;
 import passerelle.VehiculeDAO;
+import passerelle.ConduitSurDAO;
+import passerelle.TypeVehiculeDAO;
 import passerelle.Connexion;
 import passerelle.DAOException;
 
 public class PanelVehicules extends JPanel {
 
-    // --- ATTRIBUTS ---
     private JTable table;
     private DefaultTableModel tableModel;
     
-    // La liste source (chargée depuis la BDD)
     private List<Vehicule> listeCompleteVehicules; 
-    
-    // DAO
     private VehiculeDAO vehiculeDAO;
+    private ConduitSurDAO conduitSurDAO;
+    private Map<Integer, String> mapVehiculeLigne = new HashMap<>();
 
-    // --- CONSTRUCTEUR ---
-    public PanelVehicules(VehiculeDAO vehiculeDAO) {
+    public PanelVehicules(VehiculeDAO vehiculeDAO, ConduitSurDAO conduitSurDAO) {
         this.setLayout(new BorderLayout());
-        this.setBackground(Color.decode("#1E1E1E")); // Fond Noir Charbon
+        this.setBackground(Color.decode("#1E1E1E"));
 
-        // 1. Initialisation du DAO
         this.vehiculeDAO = vehiculeDAO;
+        this.conduitSurDAO = conduitSurDAO;
 
-        // 2. Chargement des données
         chargerDonnees();
 
-        // 3. Création des composants
         JPanel panelTop = createFilterPanel();
         JPanel panelCenter = createTablePanel();
-        JPanel panelBottom = createBottomPanel();
+        JPanel panelBottom = createBottomPanel(); // Bouton Ajout
 
-        // 4. Assemblage
         this.add(panelTop, BorderLayout.NORTH);
         this.add(panelCenter, BorderLayout.CENTER);
         this.add(panelBottom, BorderLayout.SOUTH);
     }
 
-    // --- 1. BARRE DE FILTRES (HAUT) ---
-    private JPanel createFilterPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 20));
-        panel.setOpaque(false);
-
-        // Boutons de filtre
-        panel.add(createFilterButton("Tous", true));
-        panel.add(createFilterButton("Bus", false));
-        panel.add(createFilterButton("Tram", false)); // Attention: "Tram" dans votre BDD, pas "Tramway"
-        
-        // Indicateur "En service"
-        JPanel statusPanel = new RoundedPanel(Color.decode("#2C2C2C"), 20);
-        // On compte tout le monde comme "En service" vu qu'on a pas l'info
-        JLabel lblStatus = new JLabel("Total Parc : " + listeCompleteVehicules.size());
-        lblStatus.setForeground(Color.WHITE);
-        lblStatus.setBorder(new EmptyBorder(5, 15, 5, 15));
-        statusPanel.add(lblStatus);
-        
-        panel.add(Box.createHorizontalStrut(20)); 
-        panel.add(statusPanel);
-
-        return panel;
+    private void chargerDonnees() {
+        try {
+            listeCompleteVehicules = vehiculeDAO.findAll();
+            List<ConduitSur> conduites = conduitSurDAO.findAll();
+            mapVehiculeLigne.clear();
+            for (ConduitSur cs : conduites) {
+                if (cs.getUnVehicule() != null && cs.getUneLigne() != null) {
+                    mapVehiculeLigne.put(cs.getUnVehicule().getNumVehicule(), cs.getUneLigne().getLibelle());
+                }
+            }
+        } catch (DAOException e) {
+            listeCompleteVehicules = new ArrayList<>();
+            JOptionPane.showMessageDialog(this, "Erreur chargement : " + e.getMessage());
+        }
     }
 
-    private JToggleButton createFilterButton(String text, boolean selected) {
-        JToggleButton btn = new JToggleButton(text);
-        btn.setSelected(selected);
-        btn.setFocusPainted(false);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 12));
-        btn.setForeground(Color.BLACK);
-        btn.setBackground(Color.WHITE);
-        btn.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
-        
-        // Action au clic : on filtre la liste locale
-        btn.addActionListener(e -> {
-            // Désélectionner les autres boutons (Bricolage visuel rapide)
-            for (Component c : btn.getParent().getComponents()) {
-                if (c instanceof JToggleButton && c != btn) ((JToggleButton) c).setSelected(false);
-            }
-            btn.setSelected(true);
-            filtrerTableau(text);
-        });
-        
-        return btn;
+    private void rafraichirTableau(List<Vehicule> donnees) {
+        tableModel.setRowCount(0);
+        for (Vehicule v : donnees) {
+            Color statutColor = calculerStatutMaintenance(v);
+            String ligne = mapVehiculeLigne.getOrDefault(v.getNumVehicule(), "Non assignée");
+            String modele = v.getMarque() + " " + v.getModele();
+            String dateMaint = (v.getDateHeureDerniereMaintenance() != null) 
+                    ? v.getDateHeureDerniereMaintenance().toLocalDate().toString() 
+                    : "Jamais";
+
+            tableModel.addRow(new Object[]{statutColor, modele, ligne, dateMaint, "✎"});
+        }
     }
 
-    // --- 2. LE TABLEAU (CENTRE) ---
-    private JPanel createTablePanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setOpaque(false);
-        panel.setBorder(new EmptyBorder(0, 20, 0, 20));
+    // --- ACTIONS AJOUT / MODIF ---
 
-        // Colonnes : Statut (0), Modèle (1), Ligne (2), Maintenance (3), Edit (4)
-        String[] colonnes = {"Statut", "Modèle / Marque", "Ligne", "Dernière Maintenance", ""};
+    private void ajouterVehiculeAction() {
+        JTextField txtNum = new JTextField();
+        JTextField txtMarque = new JTextField();
+        JTextField txtModele = new JTextField();
+        JTextField txtDateFab = new JTextField("2023-01-01");
+        JTextField txtDateService = new JTextField("2023-02-01");
+        String[] types = {"Bus", "Tram"};
+        JComboBox<String> cbType = new JComboBox<>(types);
 
-        tableModel = new DefaultTableModel(colonnes, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Lecture seule
-            }
+        Object[] message = {
+            "Numéro Véhicule (ID) :", txtNum,
+            "Type :", cbType,
+            "Marque :", txtMarque,
+            "Modèle :", txtModele,
+            "Date Fabrication (AAAA-MM-JJ) :", txtDateFab,
+            "Date Mise en Service (AAAA-MM-JJ) :", txtDateService
         };
 
-        table = new JTable(tableModel);
-        table.setRowHeight(50); // Lignes bien hautes
-        table.setShowVerticalLines(false);
-        table.setShowHorizontalLines(true);
-        table.setIntercellSpacing(new Dimension(0, 1));
-        table.setGridColor(Color.decode("#1E1E1E")); // Couleur inter-lignes
+        int option = JOptionPane.showConfirmDialog(this, message, "Ajouter Véhicule", JOptionPane.OK_CANCEL_OPTION);
 
-        // Couleurs Sombres
-        table.setBackground(Color.decode("#2D2D2D"));
-        table.setForeground(Color.WHITE);
-        table.setSelectionBackground(Color.decode("#404040"));
-        table.setSelectionForeground(Color.WHITE);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                int id = Integer.parseInt(txtNum.getText());
+                String marque = txtMarque.getText();
+                String modele = txtModele.getText();
+                LocalDate dateFab = LocalDate.parse(txtDateFab.getText());
+                LocalDate dateService = LocalDate.parse(txtDateService.getText());
+                LocalDateTime dateMaint = LocalDateTime.now(); // Initialisé à maintenant
 
-        // --- RENDERERS SPÉCIFIQUES ---
+                // Récupération du TypeVehicule
+                TypeVehiculeDAO typeDAO = new TypeVehiculeDAO(Connexion.getConnexion());
+                List<TypeVehicule> typesDispo = typeDAO.findAll();
+                String selection = (String) cbType.getSelectedItem();
+                TypeVehicule typeV = typesDispo.stream()
+                        .filter(t -> t.getLibelle().equalsIgnoreCase(selection))
+                        .findFirst()
+                        .orElse(null);
+                
+                if(typeV == null) {
+                    JOptionPane.showMessageDialog(this, "Erreur : Type de véhicule introuvable en base.");
+                    return;
+                }
+
+                Vehicule v;
+                if(selection.equals("Bus")) v = new Bus(id, marque, modele, dateFab, dateService, dateMaint);
+                else v = new Tram(id, marque, modele, dateFab, dateService, dateMaint);
+                
+                v.setTypevehicule(typeV);
+
+                vehiculeDAO.create(v);
+                
+                chargerDonnees(); 
+                filtrerTableau("Tous");
+                JOptionPane.showMessageDialog(this, "Véhicule ajouté !");
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erreur saisie : " + e.getMessage());
+            }
+        }
+    }
+
+    private void modifierVehiculeAction(int row) {
+        // Recherche du véhicule via le modèle affiché dans le tableau
+        String modeleAffiche = (String) table.getValueAt(row, 1);
+        Vehicule target = null;
+        for(Vehicule v : listeCompleteVehicules) {
+            if((v.getMarque() + " " + v.getModele()).equals(modeleAffiche)) {
+                target = v; break;
+            }
+        }
         
-        // 1. Point de Statut
+        if(target == null) return;
+
+        JTextField txtMarque = new JTextField(target.getMarque());
+        JTextField txtModele = new JTextField(target.getModele());
+        // Formatage date pour affichage
+        String dateMaintStr = (target.getDateHeureDerniereMaintenance() != null) 
+                ? target.getDateHeureDerniereMaintenance().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) 
+                : "";
+        JTextField txtDateMaint = new JTextField(dateMaintStr);
+
+        Object[] message = {
+            "Modifier Véhicule #" + target.getNumVehicule(),
+            "Marque :", txtMarque,
+            "Modèle :", txtModele,
+            "Dernière Maintenance (AAAA-MM-JJ HH:mm) :", txtDateMaint
+        };
+
+        // Boutons personnalisés
+        Object[] options = {"Enregistrer", "Supprimer", "Annuler"};
+
+        int choix = JOptionPane.showOptionDialog(this, 
+                message, 
+                "Modifier Véhicule", 
+                JOptionPane.YES_NO_CANCEL_OPTION, 
+                JOptionPane.PLAIN_MESSAGE, 
+                null, 
+                options, 
+                options[0]);
+
+        // --- ENREGISTRER ---
+        if (choix == 0) {
+            try {
+                target.setMarque(txtMarque.getText());
+                target.setModele(txtModele.getText());
+                if(!txtDateMaint.getText().isBlank()) {
+                    java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    target.setDateHeureDerniereMaintenance(LocalDateTime.parse(txtDateMaint.getText(), formatter));
+                }
+                
+                vehiculeDAO.update(target);
+                chargerDonnees();
+                filtrerTableau("Tous");
+                JOptionPane.showMessageDialog(this, "Modifié !");
+                
+            } catch(Exception e) {
+                JOptionPane.showMessageDialog(this, "Erreur format : " + e.getMessage());
+            }
+        }
+        
+        // --- SUPPRIMER ---
+        else if (choix == 1) {
+            int confirm = JOptionPane.showConfirmDialog(this, 
+                    "Supprimer définitivement le véhicule " + target.getNumVehicule() + " (" + target.getModele() + ") ?", 
+                    "Confirmation", 
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    vehiculeDAO.delete(target);
+                    chargerDonnees();
+                    filtrerTableau("Tous");
+                    JOptionPane.showMessageDialog(this, "Véhicule supprimé.");
+                } catch (DAOException e) {
+                    JOptionPane.showMessageDialog(this, "Erreur suppression : " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    // --- DESIGN & UTILS (Identique précédent) ---
+
+    private Color calculerStatutMaintenance(Vehicule v) {
+        if (v.getDateHeureDerniereMaintenance() == null) return Color.RED;
+        long semaines = ChronoUnit.WEEKS.between(v.getDateHeureDerniereMaintenance().toLocalDate(), LocalDate.now());
+        if (semaines < 2) return Color.GREEN;
+        if (semaines < 4) return Color.ORANGE;
+        return Color.RED;
+    }
+
+    private void filtrerTableau(String type) {
+        if(type.equals("Tous")) rafraichirTableau(listeCompleteVehicules);
+        else {
+            rafraichirTableau(listeCompleteVehicules.stream()
+                .filter(v -> v.getTypevehicule() != null && v.getTypevehicule().getLibelle().equalsIgnoreCase(type))
+                .collect(Collectors.toList()));
+        }
+    }
+
+    private JPanel createFilterPanel() {
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 20)); p.setOpaque(false);
+        p.add(createFilterButton("Tous", true));
+        p.add(createFilterButton("Bus", false));
+        p.add(createFilterButton("Tram", false));
+        return p;
+    }
+    
+    private JToggleButton createFilterButton(String t, boolean s) {
+        JToggleButton b = new JToggleButton(t); b.setSelected(s); b.setBackground(Color.WHITE); b.setForeground(Color.BLACK);
+        b.setBorder(BorderFactory.createEmptyBorder(8,20,8,20)); b.setFocusPainted(false);
+        b.addActionListener(e->{
+            for(Component c : b.getParent().getComponents()) if(c instanceof JToggleButton && c!=b) ((JToggleButton)c).setSelected(false);
+            b.setSelected(true); filtrerTableau(t);
+        });
+        return b;
+    }
+
+    private JPanel createTablePanel() {
+        JPanel p = new JPanel(new BorderLayout()); p.setOpaque(false); p.setBorder(new EmptyBorder(0,20,0,20));
+        String[] cols = {"Statut", "Modèle", "Ligne", "Maintenance", ""};
+        tableModel = new DefaultTableModel(cols, 0) { public boolean isCellEditable(int r, int c) {return false;} };
+        table = new JTable(tableModel); table.setRowHeight(50);
+        table.setBackground(Color.decode("#2D2D2D")); table.setForeground(Color.WHITE);
+        table.setGridColor(Color.decode("#1E1E1E")); table.setShowVerticalLines(false);
+        
         table.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
         table.getColumnModel().getColumn(0).setMaxWidth(60);
-
-        // 2. Crayon Modifier
         table.getColumnModel().getColumn(4).setCellRenderer(new ActionCellRenderer());
         table.getColumnModel().getColumn(4).setMaxWidth(50);
-
-        // 3. Texte Centré pour le reste
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        centerRenderer.setBackground(Color.decode("#2D2D2D"));
-        centerRenderer.setForeground(Color.WHITE);
         
-        table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-
-        // En-tête
-        JTableHeader header = table.getTableHeader();
-        header.setBackground(Color.decode("#1E1E1E"));
-        header.setForeground(Color.WHITE);
-        header.setFont(new Font("SansSerif", Font.BOLD, 13));
-        header.setBorder(null);
-
-        // Remplissage initial
-        filtrerTableau("Tous");
-
-        // Clic sur le crayon
+        DefaultTableCellRenderer center = new DefaultTableCellRenderer(); center.setHorizontalAlignment(JLabel.CENTER);
+        center.setBackground(Color.decode("#2D2D2D")); center.setForeground(Color.WHITE);
+        for(int i=1; i<4; i++) table.getColumnModel().getColumn(i).setCellRenderer(center);
+        
+        JTableHeader h = table.getTableHeader(); h.setBackground(Color.decode("#1E1E1E")); h.setForeground(Color.WHITE); h.setBorder(null); h.setFont(new Font("SansSerif", Font.BOLD, 13));
+        
+        RoundedPanel c = new RoundedPanel(Color.decode("#2D2D2D"), 20); c.setLayout(new BorderLayout());
+        c.add(h, BorderLayout.NORTH); 
+        JScrollPane sp = new JScrollPane(table); sp.getViewport().setBackground(Color.decode("#1E1E1E")); sp.setBorder(null);
+        c.add(sp, BorderLayout.CENTER);
+        
         table.addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseClicked(MouseEvent e) {
-                int col = table.columnAtPoint(e.getPoint());
-                int row = table.rowAtPoint(e.getPoint());
-                if (col == 4 && row >= 0) {
-                    modifierVehiculeAction(row);
+                if(table.columnAtPoint(e.getPoint()) == 4 && table.getSelectedRow() != -1) {
+                    modifierVehiculeAction(table.getSelectedRow());
                 }
             }
         });
 
-        // ScrollPane
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.getViewport().setBackground(Color.decode("#1E1E1E"));
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        
-        // Conteneur arrondi visuel
-        RoundedPanel container = new RoundedPanel(Color.decode("#2D2D2D"), 20);
-        container.setLayout(new BorderLayout());
-        container.add(header, BorderLayout.NORTH);
-        container.add(scrollPane, BorderLayout.CENTER);
-
-        panel.add(container, BorderLayout.CENTER);
-        return panel;
+        p.add(c, BorderLayout.CENTER);
+        if(listeCompleteVehicules!=null) filtrerTableau("Tous");
+        return p;
     }
 
-    // --- 3. BARRE DU BAS (BOUTON AJOUTER) ---
     private JPanel createBottomPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
-        panel.setOpaque(false);
-
-        JButton btnAjouter = new JButton("Ajouter");
-        btnAjouter.setBackground(Color.WHITE);
-        btnAjouter.setForeground(Color.BLACK);
-        btnAjouter.setFont(new Font("SansSerif", Font.BOLD, 14));
-        btnAjouter.setFocusPainted(false);
-        btnAjouter.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.WHITE, 1, true),
-                BorderFactory.createEmptyBorder(8, 20, 8, 20)
-        ));
-        btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        btnAjouter.addActionListener(e -> ajouterVehiculeAction());
-
-        panel.add(btnAjouter);
-        return panel;
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT)); p.setOpaque(false);
+        JButton b = new JButton("Ajouter Véhicule"); b.setBackground(Color.WHITE); b.setForeground(Color.BLACK);
+        b.setFont(new Font("SansSerif", Font.BOLD, 12));
+        b.addActionListener(e-> ajouterVehiculeAction());
+        p.add(b); return p;
     }
 
-    // --- LOGIQUE MÉTIER ---
-
-    private void chargerDonnees() {
-        try {
-            // Appel réel à la BDD
-            listeCompleteVehicules = vehiculeDAO.findAll();
-        } catch (DAOException e) {
-            listeCompleteVehicules = new ArrayList<>();
-            JOptionPane.showMessageDialog(this, "Erreur chargement véhicules : " + e.getMessage());
-        }
-    }
-
-    private void filtrerTableau(String typeFiltre) {
-        List<Vehicule> vehiculesAffiches;
-
-        if (typeFiltre.equals("Tous")) {
-            vehiculesAffiches = listeCompleteVehicules;
-        } else {
-            // Filtrage Java sur le Type (Bus ou Tram)
-            vehiculesAffiches = listeCompleteVehicules.stream()
-                .filter(v -> {
-                    if (v.getTypevehicule() == null) return false;
-                    return v.getTypevehicule().getLibelle().equalsIgnoreCase(typeFiltre);
-                })
-                .collect(Collectors.toList());
-        }
-        rafraichirTableau(vehiculesAffiches);
-    }
-
-    private void rafraichirTableau(List<Vehicule> donnees) {
-        tableModel.setRowCount(0); // On vide
-        for (Vehicule v : donnees) {
-            
-            // --- SIMULATION DES DONNÉES MANQUANTES ---
-            String statutSimule = "En service"; // Pas d'attribut 'etat' dans Vehicule.java
-            String ligneSimulee = "-";          // Pas d'attribut 'ligne' dans Vehicule.java
-            
-            // On affiche Marque + Modèle dans la même colonne
-            String modeleComplet = v.getMarque() + " " + v.getModele();
-            
-            // Formatage date maintenance
-            String dateMaint = (v.getDateHeureDerniereMaintenance() != null) 
-                    ? v.getDateHeureDerniereMaintenance().toLocalDate().toString() 
-                    : "Aucune";
-
-            tableModel.addRow(new Object[]{
-                statutSimule,   // Col 0 : Statut (Rond)
-                modeleComplet,  // Col 1 : Modèle
-                ligneSimulee,   // Col 2 : Ligne
-                dateMaint,      // Col 3 : Date
-                "✎"             // Col 4 : Icone
-            });
-        }
-    }
-
-    // --- ACTIONS ---
-
-    private void ajouterVehiculeAction() {
-        JOptionPane.showMessageDialog(this, "Fonctionnalité 'Ajouter Véhicule' à implémenter.\n" +
-                "Il faudra créer un formulaire pour saisir Marque, Modèle, Dates...");
-    }
-
-    private void modifierVehiculeAction(int row) {
-        // Récupération (attention, il faudrait récupérer l'ID caché idéalement)
-        String modele = (String) table.getValueAt(row, 1);
-        JOptionPane.showMessageDialog(this, "Modification de : " + modele + "\n(Logique à venir)");
-    }
-
-    // --- RENDERERS & DESIGN ---
-
-    // 1. Renderer rond coloré pour le statut
     class StatusCellRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
-            label.setText(""); // On cache le texte
-            
-            // Logique couleur (Simulée pour l'instant car tout est "En service")
-            String etat = (String) value;
-            Color c = Color.GREEN; 
-            if ("En panne".equals(etat)) c = Color.RED;
-            
-            label.setIcon(new DotIcon(c));
-            return label;
+        public Component getTableCellRendererComponent(JTable t, Object v, boolean s, boolean f, int r, int c) {
+            JLabel l = (JLabel)super.getTableCellRendererComponent(t,v,s,f,r,c); l.setText(""); l.setIcon(new DotIcon((Color)v)); return l;
         }
     }
-
-    // Icône ronde simple
     class DotIcon implements Icon {
-        private Color color;
-        public DotIcon(Color c) { this.color = c; }
-        public void paintIcon(Component c, Graphics g, int x, int y) {
-            g.setColor(color);
-            g.fillOval(x, y, 10, 10); // Rond de 10px
-        }
-        public int getIconWidth() { return 10; }
-        public int getIconHeight() { return 10; }
+        Color c; public DotIcon(Color color) {c=color;}
+        public void paintIcon(Component o, Graphics g, int x, int y) {g.setColor(c); g.fillOval(x,y,10,10);}
+        public int getIconWidth() {return 10;} public int getIconHeight() {return 10;}
     }
-
-    // 2. Renderer Crayon
     class ActionCellRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            l.setText("✎"); 
-            l.setFont(new Font("SansSerif", Font.PLAIN, 18));
-            l.setForeground(Color.LIGHT_GRAY);
-            l.setHorizontalAlignment(JLabel.CENTER);
-            return l;
+        public Component getTableCellRendererComponent(JTable t, Object v, boolean s, boolean f, int r, int c) {
+            JLabel l = (JLabel)super.getTableCellRendererComponent(t,v,s,f,r,c); l.setText("✎"); l.setHorizontalAlignment(CENTER); l.setForeground(Color.LIGHT_GRAY); l.setFont(new Font("SansSerif", Font.PLAIN, 18)); return l;
         }
     }
-
-    // 3. Panneau à bords arrondis
     static class RoundedPanel extends JPanel {
-        private Color backgroundColor;
-        private int cornerRadius = 20;
-        public RoundedPanel(Color bgColor, int radius) {
-            this.backgroundColor = bgColor;
-            this.cornerRadius = radius;
-            setOpaque(false);
-        }
-        @Override
+        Color bg; int rad; public RoundedPanel(Color c, int r) {bg=c; rad=r; setOpaque(false);}
         protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(backgroundColor);
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius);
+            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setColor(bg); g.fillRoundRect(0,0,getWidth(),getHeight(),rad,rad);
         }
     }
 }
