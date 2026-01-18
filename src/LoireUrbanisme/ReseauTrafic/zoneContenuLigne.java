@@ -85,15 +85,21 @@ public class zoneContenuLigne extends JPanel {
         ligneCentre.add(lblArr, reglage);
 
         // BAS : ICÔNE CRAYON
-        JLabel lblEdit = new JLabel("✎");
-        lblEdit.setForeground(Color.WHITE);
-        lblEdit.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        lblEdit.setHorizontalAlignment(SwingConstants.RIGHT);
+        JButton btnEdit = new JButton("✎");
+        btnEdit.setForeground(Color.WHITE);
+        btnEdit.setBackground(Color.BLACK);
+        btnEdit.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        btnEdit.setHorizontalAlignment(SwingConstants.RIGHT);
+        btnEdit.setMargin(new Insets(2, 6, 2, 6));
+
+        JPanel btnWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        btnWrapper.setOpaque(false); // important si fond personnalisé
+        btnWrapper.add(btnEdit);
 
         // le tt :
         this.add(ligneHaut, BorderLayout.NORTH);
         this.add(ligneCentre, BorderLayout.CENTER);
-        this.add(lblEdit, BorderLayout.SOUTH);
+        this.add(btnWrapper, BorderLayout.SOUTH);
     }
 
 }
