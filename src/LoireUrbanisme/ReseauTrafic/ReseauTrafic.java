@@ -395,11 +395,23 @@ public class ReseauTrafic extends JPanel {
             blocGauche.add(carteArrets);
 
             //  BLOC DROIT
-            RoundedPanel carteGraph = new RoundedPanel(30);
-            carteGraph.setBackground(new Color(0x2A2A2A));
-            carteGraph.setLayout(new BorderLayout());
+            RoundedPanel ValidationsArretsGraphe = new RoundedPanel(30);
+            ValidationsArretsGraphe.setBackground(new Color(0x2A2A2A));
+            ValidationsArretsGraphe.setLayout(new BorderLayout());
 
-            //A FINIR STATS NB VALIDATION PAR ARRETS!!!!!!!!!!!!!!!!!!!!!!
+            conteneurData.add(blocGauche, BorderLayout.WEST);
+            conteneurData.add(ValidationsArretsGraphe, BorderLayout.CENTER);
+
+            // 2. On met ce conteneur dans la section du bas
+            sectionBas.add(conteneurData, BorderLayout.CENTER);
+
+            // 3. ON AJOUTE LES DEUX SECTIONS À LA PARTIE DROITE (C'est ce qui te manque !)
+            partieDroite.add(sectionHaut); // Le bus et le titre
+            partieDroite.add(sectionBas);  // Les tickets, arrêts et graphique
+
+            // 4. On force Java à redessiner le tout
+            partieDroite.revalidate();
+            partieDroite.repaint();
         }
 
     private JPanel creerBlocInfoBus(String idV, String nomChauffeur) {

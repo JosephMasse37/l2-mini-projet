@@ -395,8 +395,9 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
 
     public int getNbValidationsJour(int idLigne) {
         int total = 0;
+
         String sql = "SELECT SUM(nbValidation) FROM conduitsur " +
-                "WHERE idLigne = ? AND DATE(dateHeureConduite) = CURDATE()";
+                "WHERE idLigne = ? AND dateHeureConduite <= NOW()";
 
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setInt(1, idLigne);
@@ -406,7 +407,7 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erreur SQL : " + e.getMessage());
         }
         return total;
     }
