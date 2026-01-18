@@ -120,27 +120,13 @@ public class ReseauTrafic extends JPanel {
                 listeLignes = dao.findByNomEtType(filtre, this.typeLigne);
             }
 
-            passerelle.ChauffeurDAO chauffeurDAO = new passerelle.ChauffeurDAO(passerelle.Connexion.getConnexion());                String nomAffiche;
-
             ConduitSurDAO conduiteDAO = new ConduitSurDAO(passerelle.Connexion.getConnexion());
             for (Ligne L : listeLignes) {
 
                 String statutDynamique = conduiteDAO.getStatutLigne(L.getIdLigne());
-                String idV = conduiteDAO.getVehiculeId(L.getIdLigne());
-                int idChauffeur = conduiteDAO.getIdChauffeurPourLigne(L.getIdLigne());
-
-                String nomChauffeur = "Aucun conducteur";
-                if (idChauffeur != -1) {
-                    Chauffeur c = chauffeurDAO.find(idChauffeur);
-                    if (c != null && c.getUtilisateur() != null) {
-                        nomChauffeur = c.getUtilisateur().getNom() + " " + c.getUtilisateur().getPrenom();
-                    }
-                }
 
                 // car modifié milles fois..
                 final String fStatut = statutDynamique;
-                final String fVehicule = idV;
-                final String fNom = nomChauffeur;
 
                 zoneContenuLigne carte = new zoneContenuLigne(L.getLibelle(), L.getTrajet(), statutDynamique) {
                     @Override
@@ -177,7 +163,7 @@ public class ReseauTrafic extends JPanel {
                         }
                         carte.putClientProperty("selectionnee", true);
                         conteneurLigne.repaint();
-                        afficherDetailsLigne(L, fStatut, fVehicule, fNom);
+                        afficherDetailsLigne(L, fStatut);
                     }});
 
                 conteneurLigne.add(carte);
@@ -210,7 +196,7 @@ public class ReseauTrafic extends JPanel {
     }
 
     // pr màj de la partie droite au clique
-        private void afficherDetailsLigne(metiers.Ligne ligne, String statut, String idV, String nomChauffeur) {
+        private void afficherDetailsLigne(metiers.Ligne ligne, String statut) {
 
             partieDroite.removeAll();
             partieDroite.setLayout(new BoxLayout(partieDroite, BoxLayout.Y_AXIS));
@@ -270,7 +256,7 @@ public class ReseauTrafic extends JPanel {
             carteBus.add(imgBus, BorderLayout.NORTH);
 
             // Infos le bus
-            JPanel blocInfo = creerBlocInfoBus(idV, nomChauffeur);
+            JPanel blocInfo = creerBlocInfoBus(this.typeLigne);
             carteBus.add(blocInfo, BorderLayout.CENTER);
             sectionHaut.add(carteBus);
             // forceeeeeeeee
@@ -284,8 +270,7 @@ public class ReseauTrafic extends JPanel {
                     BorderFactory.createEmptyBorder(0, 0, 20, 0)
             ));
 
-
-            // SECTION DU BAS : stats
+            // SECTION DU BAS : STATS !!
 
             JPanel sectionBas = new JPanel(new BorderLayout(0, 20));
             sectionBas.setOpaque(false);
@@ -296,26 +281,18 @@ public class ReseauTrafic extends JPanel {
             lblStatsTitre.setForeground(Color.WHITE);
             sectionBas.add(lblStatsTitre, BorderLayout.NORTH);
 
-            // cont stats sans text
-            JPanel conteneurData = new JPanel(new BorderLayout(25, 0));
-            conteneurData.setOpaque(false);
+            //pr deux bloc
+            JPanel conteneurCartesStats = new JPanel(new GridLayout(1, 2, 25, 0)); // 1 l/2 col
+            conteneurCartesStats.setOpaque(false);
 
-            //arrets + tickets validés
-            JPanel blocGauche = new JPanel();
-            blocGauche.setLayout(new BoxLayout(blocGauche, BoxLayout.Y_AXIS));
-            blocGauche.setOpaque(false);
-            blocGauche.setPreferredSize(new Dimension(287, 0));
-
-            // tickets valides
+            //  TICKETS VALIDÉS
             ConduitSurDAO conduiteDAO = new ConduitSurDAO(passerelle.Connexion.getConnexion());
             int totalTickets = conduiteDAO.getNbValidationsJour(ligne.getIdLigne());
 
-            // panel
             RoundedPanel carteTickets = new RoundedPanel(30);
             carteTickets.setBackground(new Color(0x373030));
             carteTickets.setLayout(new BorderLayout());
-            carteTickets.setPreferredSize(new Dimension(287, 152));
-            carteTickets.setMaximumSize(new Dimension(287, 152));
+            carteTickets.setPreferredSize(new Dimension(300, 200)); //
 
             JPanel blocTitreTickets = new JPanel();
             blocTitreTickets.setLayout(new BoxLayout(blocTitreTickets, BoxLayout.Y_AXIS));
@@ -325,7 +302,6 @@ public class ReseauTrafic extends JPanel {
             JLabel lblTitrePrincipal = new JLabel("Tickets Validés");
             lblTitrePrincipal.setForeground(Color.WHITE);
             lblTitrePrincipal.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
             JLabel lblSousTitre = new JLabel("(Aujourd'hui)");
             lblSousTitre.setForeground(new Color(0x888888));
             lblSousTitre.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -334,31 +310,24 @@ public class ReseauTrafic extends JPanel {
             blocTitreTickets.add(lblSousTitre);
             carteTickets.add(blocTitreTickets, BorderLayout.NORTH);
 
-            JLabel nbT = new JLabel(String.valueOf(totalTickets)); // use la var SQL
+            JLabel nbT = new JLabel(String.valueOf(totalTickets));
             nbT.setFont(new Font("Segoe UI", Font.BOLD, 50));
             nbT.setForeground(Color.WHITE);
             nbT.setHorizontalAlignment(JLabel.CENTER);
             carteTickets.add(nbT, BorderLayout.CENTER);
 
-            // Label du pourcentage
+            // Évolution
             String evolutionTexte = conduiteDAO.getEvolutionValidations(ligne.getIdLigne());
-
             JLabel evolT = new JLabel(evolutionTexte, SwingConstants.RIGHT);
             evolT.setFont(new Font("Segoe UI", Font.BOLD, 14));
             evolT.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 20));
-
-            if (evolutionTexte.startsWith("-")) {
-                evolT.setForeground(new Color(0xFF4444)); // Rouge
-            } else {
-                evolT.setForeground(new Color(0x32CD32)); // Vert
-            }
+            evolT.setForeground(evolutionTexte.startsWith("-") ? new Color(0xFF4444) : new Color(0x32CD32));
             carteTickets.add(evolT, BorderLayout.SOUTH);
 
-            // liste Arrêts
+            // Liste arrets
             RoundedPanel carteArrets = new RoundedPanel(30);
             carteArrets.setBackground(new Color(0x373030));
             carteArrets.setLayout(new BorderLayout());
-            carteArrets.setPreferredSize(new Dimension(287, 300));
 
             JPanel containerListe = new JPanel();
             containerListe.setLayout(new BoxLayout(containerListe, BoxLayout.Y_AXIS));
@@ -380,60 +349,40 @@ public class ReseauTrafic extends JPanel {
                     containerListe.add(ligneArret);
                 }
             } catch (DAOException e) {
-                containerListe.add(new JLabel("Erreur SQL"));
+                containerListe.add(new JLabel("Erreur SQL", SwingConstants.CENTER));
             }
 
             JScrollPane scrollA = new JScrollPane(containerListe);
             scrollA.setOpaque(false);
-            scrollA.getViewport().setOpaque(false); //fond moche
-            scrollA.setBorder(null); // carre moche
-            carteArrets.add(scrollA, BorderLayout.CENTER); //predn espace restant
+            scrollA.getViewport().setOpaque(false);
+            scrollA.setBorder(null);
+            carteArrets.add(scrollA, BorderLayout.CENTER);
 
-            //  ASSEMBLAGE DU BLOC GAUCHE
-            blocGauche.add(carteTickets);
-            blocGauche.add(Box.createVerticalStrut(20));
-            blocGauche.add(carteArrets);
+            conteneurCartesStats.add(carteTickets);
+            conteneurCartesStats.add(carteArrets);
 
-            //  BLOC DROIT
-            RoundedPanel ValidationsArretsGraphe = new RoundedPanel(30);
-            ValidationsArretsGraphe.setBackground(new Color(0x2A2A2A));
-            ValidationsArretsGraphe.setLayout(new BorderLayout());
+            sectionBas.add(conteneurCartesStats, BorderLayout.CENTER);
 
-            conteneurData.add(blocGauche, BorderLayout.WEST);
-            conteneurData.add(ValidationsArretsGraphe, BorderLayout.CENTER);
+            partieDroite.add(sectionHaut);
+            partieDroite.add(sectionBas);
 
-            // 2. On met ce conteneur dans la section du bas
-            sectionBas.add(conteneurData, BorderLayout.CENTER);
-
-            // 3. ON AJOUTE LES DEUX SECTIONS À LA PARTIE DROITE (C'est ce qui te manque !)
-            partieDroite.add(sectionHaut); // Le bus et le titre
-            partieDroite.add(sectionBas);  // Les tickets, arrêts et graphique
-
-            // 4. On force Java à redessiner le tout
             partieDroite.revalidate();
             partieDroite.repaint();
+
         }
 
-    private JPanel creerBlocInfoBus(String idV, String nomChauffeur) {
+    private JPanel creerBlocInfoBus(String typeLigne) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setOpaque(false);
 
-        // Ligne 1 : Véhicule
-        JLabel lblVehi = new JLabel("Véhicule id : " + idV);
-        lblVehi.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        lblVehi.setForeground(Color.WHITE);
-        lblVehi.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //  "Ligne de Bus" ou "Ligne de Tramway"
+        JLabel lblType = new JLabel("Ligne de " + typeLigne);
+        lblType.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        lblType.setForeground(Color.WHITE);
+        lblType.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Ligne 2 : Chauffeur
-        JLabel lblChauff = new JLabel("conduit par : " + nomChauffeur);
-        lblChauff.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        lblChauff.setForeground(Color.WHITE);
-        lblChauff.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        panel.add(lblVehi);
-        panel.add(Box.createVerticalStrut(5));
-        panel.add(lblChauff);
+        panel.add(lblType);
 
         return panel;
     }
