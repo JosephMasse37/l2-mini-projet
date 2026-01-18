@@ -15,6 +15,11 @@ public class ClientTableModel extends AbstractTableModel {
     }
 
     @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
+
+    @Override
     public int getRowCount() {
         return clients.size();
     }

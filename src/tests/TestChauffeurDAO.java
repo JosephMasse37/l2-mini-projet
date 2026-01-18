@@ -46,6 +46,22 @@ public class TestChauffeurDAO {
         }
     }
 
+    @Test
+    @DisplayName("Récupération de tous les Chauffeurs avec une formation Tram")
+    void testGetChauffeursAvecFormationTram() throws DAOException {
+        // appelle la méthode
+        List<Chauffeur> tousLesChauffeurs = chauffeurDAO.getChauffeursAvecFormationTram();
+
+        //VALIDATION de la conformité de l'objet envoyé!! grace aux assertions
+        assertNotNull(tousLesChauffeurs, "La liste ne doit pas être null");
+        assertTrue(tousLesChauffeurs.size() > 0, "La liste devrait contenir au moins un Chauffeur");
+        System.out.println(" Nombre de Chauffeurs trouvés : " + tousLesChauffeurs.size());
+
+        for (Chauffeur UnChauffeurs : tousLesChauffeurs) {
+            System.out.println("Vérification Chauffeur ID " + UnChauffeurs.getIdChauffeur() + " : " + UnChauffeurs.getUtilisateur().getUsername());
+            assertNotNull(UnChauffeurs.getUtilisateur(), "L'utilisateur lié ne devrait pas etre null pour le chauffeur ID: " + UnChauffeurs.getIdChauffeur());
+            assertNotNull(UnChauffeurs.getUtilisateur().getUsername(), "Le username ne devrait pas etre null pour le chauffeur ID: " + UnChauffeurs.getIdChauffeur()); }
+    }
 
     @Test
     @DisplayName("Creation d'un Chauffeur")
@@ -182,6 +198,4 @@ public class TestChauffeurDAO {
             assertNotNull(UnChauffeurs.getUtilisateur(), "L'utilisateur lié ne devrait pas etre null pour le chauffeur ID: " + UnChauffeurs.getIdChauffeur());
             assertNotNull(UnChauffeurs.getUtilisateur().getUsername(), "Le username ne devrait pas etre null pour le chauffeur ID: " + UnChauffeurs.getIdChauffeur()); }
     }
-
-
 }

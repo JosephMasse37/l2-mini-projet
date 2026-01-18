@@ -18,7 +18,7 @@ public class DessertDAO extends DAO<Dessert> {
         List<Arret> listesArretsDesservis = new ArrayList<>();
 
         // Execution de requetes
-        String req = "SELECT idLigne, idArret FROM dessert WHERE idLigne = ?";
+        String req = "SELECT idLigne, idArret, ordre FROM dessert WHERE idLigne = ? ORDER BY ordre";
 
         ResultSet rs = null;
         try {
@@ -82,7 +82,7 @@ public class DessertDAO extends DAO<Dessert> {
     @Override
     public Dessert find(int idArret, int idLigne) throws DAOException {
         // Execution de requetes
-        String req = "SELECT idArret, idLigne FROM dessert WHERE idArret = ? AND idLigne = ?";
+        String req = "SELECT idArret, idLigne, ordre FROM dessert WHERE idArret = ? AND idLigne = ?";
 
         ResultSet rs = null;
         try {
@@ -93,16 +93,16 @@ public class DessertDAO extends DAO<Dessert> {
                 rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    int idArret_ = rs.getInt("idArret");
-                    int idLigne_ = rs.getInt("idLigne");
+                    int ordre = rs.getInt("ordre");
 
                     // Récupération des DAOs
                     LigneDAO ligneDAO = new LigneDAO(connexion);
                     ArretDAO arretDAO = new ArretDAO(connexion);
 
-                    Arret lArret = arretDAO.find(idArret_);
-                    Ligne laLigne = ligneDAO.find(idLigne_);
-                    return new Dessert(lArret, laLigne);
+                    Arret lArret = arretDAO.find(idArret);
+                    Ligne laLigne = ligneDAO.find(idLigne);
+
+                    return new Dessert(lArret, laLigne, ordre);
                 }
             }
         } catch (SQLException e) {
@@ -123,7 +123,7 @@ public class DessertDAO extends DAO<Dessert> {
         List<Dessert> lesDessertes = new ArrayList<>();
 
         // Execution de requetes
-        String req = "SELECT idArret, idLigne FROM dessert;";
+        String req = "SELECT idArret, idLigne, ordre FROM dessert ORDER BY idLigne, ordre;";
         ResultSet rs = null;
         try {
             try(PreparedStatement ps = connexion.prepareStatement(req)) {
@@ -132,6 +132,7 @@ public class DessertDAO extends DAO<Dessert> {
                 while (rs.next()) {
                     int idArret = rs.getInt("idArret");
                     int idLigne = rs.getInt("idLigne");
+                    int ordre = rs.getInt("ordre");
 
                     // Récupération des DAOs
                     LigneDAO ligneDAO = new LigneDAO(connexion);
@@ -140,7 +141,7 @@ public class DessertDAO extends DAO<Dessert> {
                     Arret lArret = arretDAO.find(idArret);
                     Ligne laLigne = ligneDAO.find(idLigne);
 
-                    lesDessertes.add(new Dessert(lArret, laLigne));
+                    lesDessertes.add(new Dessert(lArret, laLigne, ordre));
                 }
             }
         } catch (SQLException e) {

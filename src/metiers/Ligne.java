@@ -12,6 +12,7 @@ public class Ligne {
     private Arret arretArrive;
     private List<Arret> arretsDesservis = new ArrayList<>();
     private int duree;
+    private String couleur;
 
     public int getIdLigne() {
         return idLigne;
@@ -29,6 +30,9 @@ public class Ligne {
         return duree;
     }
 
+    public void setDuree(int duree) {
+        this.duree = duree;
+    }
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
@@ -76,19 +80,13 @@ public class Ligne {
         }
     }
 
-   /* public boolean estDesservi(Arret unArret) {
-        boolean arretDesservi = false;
-        int i = 0;
-
-        while (i<this.arretsDesservis.size() || !arretDesservi) {
-            if (unArret.getIdArret() == this.arretsDesservis.get(i).getIdArret()) {
-                arretDesservi = true;
-            }
-            i++;
-        }
-        return arretDesservi;
+    public String getCouleur() {
+        return couleur;
     }
-     J AI CHANGE CAR PLUS LISIBLE ET PAS MANIP D INDEX DONC MOINS D ERREURS POSSIBLE*/
+
+    public void setCouleur(String couleur) {
+        this.couleur = couleur;
+    }
 
     public boolean estDesservi(Arret unArret) {
 
@@ -114,28 +112,30 @@ public class Ligne {
         this.arretsDesservis = arretsDesservis;
     }
 
-//pr insert
-    public Ligne( String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree) {
+    //pr insert
+    public Ligne(String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree, String couleur) {
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.arretDepart = arretDepart;
         this.arretArrive = arretArrive;
-        this.duree=duree;
-
+        this.duree = duree;
+        this.couleur = couleur;
     }
 
     //pr find
-    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree) {
+    public Ligne(int idLigne, String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree, String couleur) {
         this.idLigne=idLigne;
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.arretDepart = arretDepart;
         this.arretArrive = arretArrive;
-        this.duree=duree;
-
-    }
-    public void setDuree(int duree) {
         this.duree = duree;
+        this.couleur = couleur;
+    }
+
+    @Override
+    public String toString() {
+        return "Ligne " + getLibelle();
     }
 }
 

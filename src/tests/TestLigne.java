@@ -1,4 +1,4 @@
-package metiers;
+package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import metiers.*;
 
 class TestLigne {
 
@@ -26,7 +27,7 @@ class TestLigne {
 
     @Test
     void testConstructeurSimple() {
-        assertEquals("Ligne 1", ligne.getLibelle());
+        assertEquals("Ligne 6", ligne.getLibelle());
         assertEquals(10, ligne.getIdLigne());
         assertEquals(typeLigne, ligne.getTypeLigne());
     }
@@ -67,10 +68,18 @@ class TestLigne {
     }
 
     @Test
+    void testSetCouleur() {
+        ligne.setCouleur("0x000000");
+
+        assertEquals("0x000000", ligne.getCouleur());
+    }
+
+    @Test
     void testAddArretDesservi() {
         ligne.addArretDesservi(arret1);
+        ligne.addArretDesservi(arret2);
 
-        assertEquals(6, ligne.getArretsDesservis().size());
+        assertEquals(2, ligne.getArretsDesservis().size());
         assertTrue(ligne.getArretsDesservis().contains(arret1));
         assertTrue(arret1.estDesservi(ligne));
     }

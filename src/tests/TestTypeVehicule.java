@@ -1,4 +1,4 @@
-package metiers;
+package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import metiers.*;
 
 class TestTypeVehicule {
 
@@ -20,10 +21,8 @@ class TestTypeVehicule {
     void setUp() {
         typeVehicule = new TypeVehicule(1, "Bus");
         vehicule1 = new Bus(999, "Alstom", "Citadis", LocalDate.now(), LocalDate.now(), LocalDateTime.now());
-        vehicule1.setTypevehicule(typeVehicule);
 
-        vehicule2 = new Bus(999, "Alstom", "Citadis", LocalDate.now(), LocalDate.now(), LocalDateTime.now());
-        vehicule2.setTypevehicule(typeVehicule);
+        vehicule2 = new Bus(998, "Alstom", "Citadis", LocalDate.now(), LocalDate.now(), LocalDateTime.now());
     }
 
     @Test

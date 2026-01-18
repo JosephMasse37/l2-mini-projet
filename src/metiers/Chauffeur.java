@@ -47,4 +47,9 @@ public class Chauffeur {
         this.formation_tram = formation_tram;
         this.setUtilisateur(utilisateur);   //garantit lien direct pcq on add via set
     }
+
+    @Override
+    public String toString() {
+        return getUtilisateur().getPrenom() + " " + getUtilisateur().getNom();
+    }
 }

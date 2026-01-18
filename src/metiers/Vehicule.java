@@ -92,9 +92,6 @@ public abstract class Vehicule {
 
     @Override
     public String toString() {
-        return "Vehicule [numVehicule=" + numVehicule + ", marque=" + marque + ", modele=" + modele
-                + ", dateFabrication=" + dateFabrication + ", dateMiseEnService=" + dateMiseEnService
-                + ", dateHeureDerniereMaintenance=" + dateHeureDerniereMaintenance + ", typevehicule=" + typevehicule
-                + "]";
+        return "Vehicule " + getNumVehicule() + ", marque " + getMarque() + ", modèle " + getModele() + ", Type " + getTypevehicule().getLibelle();
     }
 }

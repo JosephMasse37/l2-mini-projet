@@ -1,4 +1,4 @@
-package LoireUrbanisme.client;
+package LoireUrbanisme.vehicule;
 
 import javax.swing.table.*;
 import java.util.ArrayList;

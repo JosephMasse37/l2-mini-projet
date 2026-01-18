@@ -22,7 +22,7 @@ public class TestDessert {
         assertTrue(ligne.getArretsDesservis().isEmpty(), "Ligne should have no arrets initially");
 
         // Instanciation
-        Dessert dessert = new Dessert(arret, ligne);
+        Dessert dessert = new Dessert(arret, ligne, 1);
 
         // Vérification objet
         assertNotNull(dessert, "Dessert object should not be null after instantiation");
@@ -30,6 +30,7 @@ public class TestDessert {
         // Vérification getters
         assertEquals(arret, dessert.getUnArret(), "Arret should be correctly assigned");
         assertEquals(ligne, dessert.getUneLigne(), "Ligne should be correctly assigned");
+        assertEquals(1, dessert.getOrdre(), "Ligne should be correctly assigned");
 
         // Vérification relations bidirectionnelles
         assertTrue(
@@ -49,9 +50,11 @@ public class TestDessert {
 
         dessert.setUnArret(nouvelArret);
         dessert.setUneLigne(nouvelleLigne);
+        dessert.setOrdre(2);
 
         assertEquals(nouvelArret, dessert.getUnArret(), "Arret should be updated");
         assertEquals(nouvelleLigne, dessert.getUneLigne(), "Ligne should be updated");
+        assertEquals(2, dessert.getOrdre(), "Ordre should be updated");
 
         // Test toString
         String dessertString = dessert.toString();
