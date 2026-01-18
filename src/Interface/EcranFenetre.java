@@ -69,8 +69,6 @@ public class EcranFenetre extends JFrame implements MenuEvent {
                 zoneContenu.add(new BornePanel());
                 break;
 
-            case 6: // Map
-                zoneContenu.add(new Map());
             case 5:
                 Chauffeurs chauffeurs = new Chauffeurs(menu);
 
