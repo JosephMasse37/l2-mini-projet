@@ -1,5 +1,6 @@
 package Interface;
 
+import LoireUrbanisme.borne.BornePanel;
 import LoireUrbanisme.chauffeurs.Chauffeurs;
 import LoireUrbanisme.conduites.Conduites;
 import LoireUrbanisme.map.Map;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import LoireUrbanisme.menu.Menu;
+import metiers.Borne;
 import metiers.Arret;
 import metiers.Ligne;
 import metiers.Utilisateur;
@@ -63,6 +65,12 @@ public class EcranFenetre extends JFrame implements MenuEvent {
                 }
                 break;
 
+            case 3: // Réseau & Borne
+                zoneContenu.add(new BornePanel());
+                break;
+
+            case 6: // Map
+                zoneContenu.add(new Map());
             case 5:
                 Chauffeurs chauffeurs = new Chauffeurs(menu);
 
