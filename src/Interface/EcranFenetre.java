@@ -3,6 +3,8 @@ package Interface;
 import LoireUrbanisme.ReseauTrafic.ReseauTrafic;
 import LoireUrbanisme.borne.BornePanel;
 import LoireUrbanisme.chauffeurs.Chauffeurs;
+import LoireUrbanisme.client.PanelClients;
+import LoireUrbanisme.vehicule.PanelVehicules;
 import LoireUrbanisme.conduites.Conduites;
 import LoireUrbanisme.map.Map;
 import LoireUrbanisme.menu.MenuAction;
@@ -16,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import LoireUrbanisme.menu.Menu;
-import metiers.Borne;
 import metiers.Arret;
 import metiers.Ligne;
 import metiers.Utilisateur;
@@ -30,6 +31,9 @@ public class EcranFenetre extends JFrame implements MenuEvent {
     private ArretDAO arretDAO = new ArretDAO(connexion);
     private LigneDAO ligneDAO = new LigneDAO(connexion);
     private DessertDAO dessertDAO = new DessertDAO(connexion);
+    private ClientDAO clientDAO = new ClientDAO(connexion);
+    private VehiculeDAO vehiculeDAO = new VehiculeDAO(connexion);
+    private ConduitSurDAO conduitSurDAO = new ConduitSurDAO(connexion);
 
     public EcranFenetre(Utilisateur utilisateurConnecte) {
         setTitle("LoireUrbanisme - Système de Gestion des Transports");
@@ -60,14 +64,18 @@ public class EcranFenetre extends JFrame implements MenuEvent {
 
             case 1:
                 if (subIndex == 1) {
-                    zoneContenu.add(new ReseauTrafic(ligneDAO, "Bus"));
+                    zoneContenu.add(new JLabel("Bus"));
                 } else if (subIndex == 2) {
-                    zoneContenu.add(new ReseauTrafic(ligneDAO, "Tram"));
+                    zoneContenu.add(new JLabel("Tram"));
                 }
                 break;
 
-            case 3: // Réseau & Borne
-                zoneContenu.add(new BornePanel());
+            case 2:
+                zoneContenu.add(new PanelClients(clientDAO), BorderLayout.CENTER);
+                break;
+
+            case 4:
+                zoneContenu.add(new PanelVehicules(vehiculeDAO, conduitSurDAO), BorderLayout.CENTER);
                 break;
 
             case 5:
@@ -211,5 +219,4 @@ public class EcranFenetre extends JFrame implements MenuEvent {
         }
         map.afficherReseau(arrets, lignes);
     }
-
 }
