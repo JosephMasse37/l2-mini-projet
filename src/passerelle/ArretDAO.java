@@ -191,5 +191,32 @@ public class ArretDAO extends DAO<Arret> {
     public Arret find(int id1, int id2, int id3) throws DAOException {
         throw new DAOException("Non utilisé");
     }
+
+    public List<Arret> getArretsParLigne(int idLigne) throws DAOException {
+        List<Arret> arrets = new ArrayList<>();
+
+        String query = "SELECT a.idArret, a.nom, a.latitude, a.longitude " +
+                "FROM arret a " +
+                "JOIN dessert d ON a.idArret = d.idArret " +
+                "WHERE d.idLigne = ? " +
+                "ORDER BY d.ordre ASC";
+
+        try (PreparedStatement ps = connexion.prepareStatement(query)) {
+            ps.setInt(1, idLigne);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    arrets.add(new Arret(
+                            rs.getInt("idArret"),
+                            rs.getString("nom"),
+                            rs.getDouble("latitude"),
+                            rs.getDouble("longitude")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération des arrêts de la ligne " + idLigne, e);
+        }
+        return arrets;
+    }
 }
 

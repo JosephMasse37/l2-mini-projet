@@ -30,10 +30,6 @@ public class Ligne {
         return duree;
     }
 
-    public void setDuree(int duree) {
-        this.duree = duree;
-    }
-
     public void setLibelle(String libelle) {
         this.libelle = libelle;
     }
@@ -96,7 +92,7 @@ public class Ligne {
                 .anyMatch(a -> a.getIdArret() == unArret.getIdArret());
     }
 
-    public Ligne(int idLigne, String libelle, TypeLigne typeLigne) {
+    public Ligne(String libelle, TypeLigne typeLigne, int idLigne) {
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.idLigne = idLigne;
@@ -112,14 +108,14 @@ public class Ligne {
         this.arretsDesservis = arretsDesservis;
     }
 
-    //pr insert
-    public Ligne(String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree, String couleur) {
+//pr insert
+    public Ligne( String libelle, TypeLigne typeLigne, Arret arretDepart, Arret arretArrive,int duree) {
         this.libelle = libelle;
         this.typeLigne = typeLigne;
         this.arretDepart = arretDepart;
         this.arretArrive = arretArrive;
-        this.duree = duree;
-        this.couleur = couleur;
+        this.duree=duree;
+
     }
 
     //pr find
@@ -129,13 +125,18 @@ public class Ligne {
         this.typeLigne = typeLigne;
         this.arretDepart = arretDepart;
         this.arretArrive = arretArrive;
-        this.duree = duree;
+        this.duree= duree;
         this.couleur = couleur;
     }
+    public void setDuree(int duree) {
+        this.duree = duree;
+    }
 
-    @Override
-    public String toString() {
-        return "Ligne " + getLibelle();
+    public String getTrajet() {
+        if (arretDepart != null && arretArrive != null) {
+            return arretDepart.getNom() + " -> " + arretArrive.getNom();
+        }
+        return "Trajet non défini";
     }
 }
 

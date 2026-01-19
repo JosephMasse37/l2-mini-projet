@@ -200,6 +200,11 @@ import metiers.TypeLigne;
             return lignes;
         }
 
+        public List<Ligne> getLignesParType(String typeNom) throws DAOException {
+            // trad le mot en ID
+            int idType = typeNom.equalsIgnoreCase("BUS") ? 1 : 2; //bus= 1
+            return findByType(idType);
+        }
 
         @Override
         public Ligne find(int id1, int id2) throws DAOException {
@@ -210,5 +215,38 @@ import metiers.TypeLigne;
         public Ligne find(int id1, int id2, int id3) throws DAOException {
             throw new DAOException("Non utilisé");
         }
+
+        public List<Ligne> findByNomEtType(String nom, String typeNom) throws DAOException {
+            List<Ligne> lignes = new ArrayList<>();
+
+            String query = "SELECT * FROM ligne WHERE idTypeLigne = ? AND libelle LIKE ?";
+
+            int idType = typeNom.equalsIgnoreCase("BUS") ? 1 : 2;
+
+            try (PreparedStatement ps = connexion.prepareStatement(query)) {
+                ps.setInt(1, idType);
+                ps.setString(2, "%" + nom + "%");
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    ArretDAO arretDAO = new ArretDAO(connexion);
+                    TypeLigneDAO typeDAO = new TypeLigneDAO(connexion);
+                    while (rs.next()) {
+                        lignes.add(new Ligne(
+                                rs.getInt("idLigne"),
+                                rs.getString("libelle"),
+                                typeDAO.find(rs.getInt("idTypeLigne")),
+                                arretDAO.find(rs.getInt("Arret_Depart")),
+                                arretDAO.find(rs.getInt("Arret_Fin")),
+                                rs.getInt("duree"),
+                                rs.getString("couleur")
+                        ));
+                    }
+                }
+            } catch (SQLException e) {
+                throw new DAOException("Erreur recherche par nom", e);
+            }
+            return lignes;
+        }
     }
+
 
