@@ -1,5 +1,6 @@
 package LoireUrbanisme.borne;
 
+import LoireUrbanisme.chauffeurs.AjouterChauffeurDialog;
 import metiers.Arret;
 import passerelle.DAOException;
 
@@ -67,17 +68,26 @@ public class BornePanel extends JPanel {
         listeArrets.setFixedCellHeight(40);
         listeArrets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        listeArrets.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                String value = listeArrets.getSelectedValue();
+                if (value != null) {
+                    BorneAction.choixBornesUnArret(value, this);
+                }
+            }
+        });
+
         JScrollPane scroll = new JScrollPane(listeArrets);
         scroll.setBorder(null);
         scroll.getViewport().setBackground(new Color(30, 30, 30));
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
 
         listeArrets.setBackground(new Color(30, 30, 30));
         listeArrets.setForeground(Color.WHITE);
 
         panel.add(titre, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
+        panel.add(addButton(), BorderLayout.SOUTH);
 
         return panel;
     }
@@ -107,5 +117,68 @@ public class BornePanel extends JPanel {
                 "Erreur base de données",
                 JOptionPane.ERROR_MESSAGE
         );
+    }
+
+    private Component addButton() {
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setOpaque(false); // garde le fond sombre
+        JButton addButton = new JButton("Ajouter une borne") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Remplir le fond avec couleur
+                g2.setColor(new Color(165, 55, 255)); // violet
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); // 20 px d’arrondi
+
+                // Dessiner le texte centré
+                g2.setColor(getForeground());
+                FontMetrics fm = g2.getFontMetrics();
+                int x = (getWidth() - fm.stringWidth(getText())) / 2;
+                int y = (getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+                g2.drawString(getText(), x, y);
+
+                g2.dispose();
+            }
+        };
+
+        addButton.setPreferredSize(new Dimension(200, 40));
+        addButton.setBorderPainted(false);
+        addButton.setFocusPainted(false);
+
+        addButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        bottomPanel.add(addButton);
+
+        addButton.addActionListener(e -> {
+            try {
+                AjouterBorneDialog.show(this);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Erreur lors de l'ajout de la borne",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        return bottomPanel;
+    }
+
+    public void refreshPanel() {
+        removeAll();
+
+        add(titre(), BorderLayout.NORTH);
+        add(contenuCentral(), BorderLayout.CENTER);
+
+        try {
+            chargerDonnees();
+        } catch (DAOException e) {
+            afficherErreur();
+        }
+
+        revalidate();
+        repaint();
     }
 }

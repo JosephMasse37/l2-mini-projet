@@ -214,6 +214,34 @@ import metiers.Borne;
             }
             return stats;
         }
+
+        public List<Borne> getBornesUnArret(int idArret) throws DAOException {
+
+            List<Borne> bornes = new ArrayList<>();
+            String query = "SELECT idBorne, nbVoyageVendu, NbVentesTickets FROM borne WHERE idArret = " + idArret;
+
+            ArretDAO arretDAO = new ArretDAO(this.connexion);
+
+            try (PreparedStatement ps = connexion.prepareStatement(query);
+                 ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+
+                    int idBorne = rs.getInt("idBorne");
+                    int nbVoyageVendu = rs.getInt("nbVoyageVendu");
+                    int NbVentesTickets = rs.getInt("NbVentesTickets");
+                    Arret arret = arretDAO.find(idArret);
+
+
+                    Borne borne = new Borne(idBorne, nbVoyageVendu, NbVentesTickets, arret);
+                    bornes.add(borne);
+                }
+
+            } catch (SQLException e) {
+                throw new DAOException("Erreur lors de la récupération de toutes les bornes", e);
+            }
+            return bornes;
+        }
     }
 
 

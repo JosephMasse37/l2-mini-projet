@@ -86,7 +86,7 @@ public class ArretDAO extends DAO<Arret> {
     public List<Arret> findAll() throws DAOException {
 
         List<Arret> arrets = new ArrayList<>();
-        String query = "SELECT idArret, nom, latitude, longitude FROM arret";
+        String query = "SELECT idArret, nom, latitude, longitude FROM arret ORDER BY nom";
 
         try (PreparedStatement ps = connexion.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
@@ -180,6 +180,36 @@ public class ArretDAO extends DAO<Arret> {
         }
 
         return arretsTrouves;
+    }
+
+    public Arret findByNom(String nomRecherche) throws DAOException {
+
+        String query = "SELECT idArret, nom, latitude, longitude FROM arret WHERE nom = ?";
+
+        try (PreparedStatement ps = connexion.prepareStatement(query)) {
+
+            ps.setString(1, nomRecherche);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    int idArret = rs.getInt("idArret");
+                    String nom = rs.getString("nom");
+                    double latitude = rs.getDouble("latitude");
+                    double longitude = rs.getDouble("longitude");
+
+                    Arret arret = new Arret(idArret, nom, latitude, longitude);
+                   return arret;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("ERREUR BDD lors de la recherche par nom. Détails:");
+            e.printStackTrace();
+            throw new DAOException("Erreur lors de la recherche des arrêts par nom: " + nomRecherche, e);
+        }
+
+        return null;
     }
 
     @Override

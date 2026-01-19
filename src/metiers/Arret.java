@@ -96,12 +96,15 @@ public class Arret {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-        // sans id car deja autoincrement + pour le insert mieux pour jdbc
-      public Arret(String nom, double latitude, double longitude) {
+    // sans id car deja autoincrement + pour le insert mieux pour jdbc
+    public Arret(String nom, double latitude, double longitude) {
         this.nom = nom;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-
+    @Override
+    public String toString() {
+        return getNom();
+    }
 }
