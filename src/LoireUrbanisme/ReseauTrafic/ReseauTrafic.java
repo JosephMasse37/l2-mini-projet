@@ -109,7 +109,7 @@ public class ReseauTrafic extends JPanel {
 
     private void chargerListe(String filtre) {
 
-        conteneurLigne.removeAll(); // On vide les anciens filtresss
+        conteneurLigne.removeAll(); // On vide les anciens filtres
 
         // DATA
         try {
@@ -125,10 +125,10 @@ public class ReseauTrafic extends JPanel {
 
                 String statutDynamique = conduiteDAO.getStatutLigne(L.getIdLigne());
 
-                // car modifié milles fois..
+                // car modifié mille fois...
                 final String fStatut = statutDynamique;
 
-                zoneContenuLigne carte = new zoneContenuLigne(L.getLibelle(), L.getTrajet(), statutDynamique) {
+                zoneContenuLigne carte = new zoneContenuLigne(L, statutDynamique) {
                     @Override
                     protected void paintComponent(Graphics g) {
                         Graphics2D g2 = (Graphics2D) g.create();

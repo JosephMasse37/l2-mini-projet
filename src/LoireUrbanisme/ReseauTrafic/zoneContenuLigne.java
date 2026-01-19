@@ -1,5 +1,8 @@
 package LoireUrbanisme.ReseauTrafic;
 
+import metiers.Ligne;
+import passerelle.DAOException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -19,7 +22,7 @@ public class zoneContenuLigne extends JPanel {
 
         }}
 
-    public zoneContenuLigne(String nomLigne, String trajet, String statut) {
+    public zoneContenuLigne(Ligne ligne, String statut) {
         this.setOpaque(false);
         // BorderLayout pr mieux control les 3 zones (Haut, Milieu, Bas)
         this.setLayout(new BorderLayout());
@@ -32,7 +35,7 @@ public class zoneContenuLigne extends JPanel {
 
         chargerPolice();
 
-        JLabel lblNom = new JLabel("Ligne " + nomLigne);
+        JLabel lblNom = new JLabel("Ligne " + ligne.getLibelle());
         lblNom.setForeground(new Color(180, 180, 180));
         lblNom.setFont(customFont.deriveFont(Font.PLAIN, 16f));
 
@@ -53,7 +56,7 @@ public class zoneContenuLigne extends JPanel {
         reglage.gridy = 0; // ts les elem sur la mm ligne (ligne 0)
 
         // Nettoyage de la chaîne
-        String trajetNettoye = trajet.replace("->", "-");
+        String trajetNettoye = ligne.getTrajet().replace("->", "-");
         String[] points = trajetNettoye.split("-");
         String depart = (points.length > 0) ? points[0].trim().toUpperCase() : ""; // un depart? sinn vide
         String arrivee = (points.length > 1) ? points[1].trim().toUpperCase() : ""; //same
@@ -91,6 +94,15 @@ public class zoneContenuLigne extends JPanel {
         btnEdit.setFont(new Font("SansSerif", Font.PLAIN, 20));
         btnEdit.setHorizontalAlignment(SwingConstants.RIGHT);
         btnEdit.setMargin(new Insets(2, 6, 2, 6));
+
+        // Fonctionnalité du bouton
+        btnEdit.addActionListener(e -> {
+            try {
+                ReseauTraficAction.editLigne(ligne, this);
+            } catch (DAOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         JPanel btnWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         btnWrapper.setOpaque(false); // important si fond personnalisé
