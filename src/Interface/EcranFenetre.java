@@ -1,5 +1,5 @@
 package Interface;
-
+import LoireUrbanisme.VueEnsemble.VueEnsemble;
 import LoireUrbanisme.borne.BornePanel;
 import LoireUrbanisme.chauffeurs.Chauffeurs;
 import LoireUrbanisme.conduites.Conduites;
@@ -94,9 +94,6 @@ public class EcranFenetre extends JFrame implements MenuEvent {
         zoneContenu.repaint();
     }
 
-    private void afficherVueEnsemble() {
-        zoneContenu.add(new JLabel("Vue d'ensemble"));
-    }
 
     private void afficherMap() {
         Map map = new Map();
@@ -206,5 +203,12 @@ public class EcranFenetre extends JFrame implements MenuEvent {
             map.setLignesSelectionnees(selectionnees);
         }
         map.afficherReseau(arrets, lignes);
+    }
+
+    private void afficherVueEnsemble() {
+        zoneContenu.removeAll();
+        zoneContenu.add(new VueEnsemble(), BorderLayout.CENTER);
+        zoneContenu.revalidate();
+        zoneContenu.repaint();
     }
 }

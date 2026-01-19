@@ -7,8 +7,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 import metiers.Arret;
 import metiers.Borne;
@@ -178,7 +180,38 @@ import metiers.Borne;
         public Borne find(int id1, int id2, int id3) throws DAOException {
             throw new DAOException("Non utilisé");
         }
+        public Map<String, String> getStatsExtremes() throws DAOException {
+            Map<String, String> stats = new HashMap<>();
 
+            //  plus rentable (Celle qui a le plus gros nbVentesTickets)
+            String sqlBest = "SELECT idBorne, nbVentesTickets FROM borne ORDER BY nbVentesTickets DESC LIMIT 1";
+
+            //  pire (Celle qui a le moins de nbVentesTickets)
+            String sqlPire = "SELECT idBorne, nbVentesTickets FROM borne ORDER BY nbVentesTickets ASC LIMIT 1";
+
+            try (java.sql.Statement st = connexion.createStatement()) {
+
+                //  pour la meilleure
+                try (ResultSet rs1 = st.executeQuery(sqlBest)) {
+                    if (rs1.next()) {           // convert en string
+                        stats.put("best_id", String.valueOf(rs1.getInt("idBorne")));
+                        stats.put("best_ventes", String.valueOf(rs1.getInt("nbVentesTickets")));
+                    }
+                }
+
+                //  pour la pire
+                try (ResultSet rs2 = st.executeQuery(sqlPire)) {
+                    if (rs2.next()) {
+                        stats.put("pire_id", String.valueOf(rs2.getInt("idBorne")));
+                        stats.put("pire_ventes", String.valueOf(rs2.getInt("nbVentesTickets")));
+                    }
+                }
+
+            } catch (SQLException e) {
+                throw new DAOException("Erreur lors du calcul des stats de rentabilité", e);
+            }
+            return stats;
+        }
     }
 
 
