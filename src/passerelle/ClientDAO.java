@@ -4,8 +4,10 @@ import java.sql.SQLException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 import metiers.Abonnement;
 import metiers.Client;
@@ -165,6 +167,28 @@ public class ClientDAO extends DAO<Client>  {
     @Override
     public Client find(int id1, int id2, int id3) throws DAOException {
         throw new DAOException("Not used");
+    }
+
+    public Map<String, Integer> getStatsParFormule() throws DAOException {
+        Map<String, Integer> stats = new HashMap<>();
+
+        String sql = "SELECT a.formule, COUNT(c.idClient) as nb " +
+                "FROM client c " +
+                "JOIN abonnement a ON c.idAbonnement = a.idAbonnement " +
+                "GROUP BY a.formule";
+
+        try (PreparedStatement ps = connexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                // Clé = FORMULE
+                // Valeur = le nombre de clients
+                stats.put(rs.getString("formule"), rs.getInt("nb"));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur stats formules : " + e.getMessage());
+        }
+        return stats;
     }
 
     
