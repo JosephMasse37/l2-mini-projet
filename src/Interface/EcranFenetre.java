@@ -1,76 +1,93 @@
 package Interface;
 
 import LoireUrbanisme.ReseauTrafic.ReseauTrafic;
+import LoireUrbanisme.borne.BornePanel;
+import LoireUrbanisme.chauffeurs.Chauffeurs;
+import LoireUrbanisme.conduites.Conduites;
+import LoireUrbanisme.map.Map;
 import LoireUrbanisme.menu.MenuAction;
 import LoireUrbanisme.menu.MenuEvent;
 import com.formdev.flatlaf.FlatDarkLaf;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import LoireUrbanisme.menu.Menu;
 import java.sql.Connection;
-import metiers.Ligne;
-import passerelle.LigneDAO;
+import java.util.ArrayList;
+import java.util.List;
 
+import LoireUrbanisme.menu.Menu;
+import metiers.Borne;
+import metiers.Arret;
+import metiers.Ligne;
+import metiers.Utilisateur;
+import passerelle.*;
 
 public class EcranFenetre extends JFrame implements MenuEvent {
-    private Connection maConnexion;
-    private LigneDAO dao;
     private Menu menu;
     private JPanel zoneContenu;
 
-    public EcranFenetre() {
+    private Connection connexion = Connexion.getConnexion();
+    private ArretDAO arretDAO = new ArretDAO(connexion);
+    private LigneDAO ligneDAO = new LigneDAO(connexion);
+    private DessertDAO dessertDAO = new DessertDAO(connexion);
 
-        maConnexion = passerelle.Connexion.getConnexion();
-
-        if (maConnexion != null) {
-            dao = new LigneDAO(maConnexion);
-        } else {
-            System.err.println("Impossible de se connecter à la base bd_gestbus");
-        }
-
+    public EcranFenetre(Utilisateur utilisateurConnecte) {
         setTitle("LoireUrbanisme - Système de Gestion des Transports");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1100, 750);
-        setLocationRelativeTo(null); // Centre la fenêtre
+        setSize(1720, 980);
+        setLocationRelativeTo(null);
 
-        setLayout(new BorderLayout()); //plan fenetre (divions ) :
-        //  Utilisation de la POO
-        menu = new Menu();
-        zoneContenu = new JPanel(new BorderLayout()); // on redivise
-        zoneContenu.setBackground(new Color(0x413B3B));
+        setLayout(new BorderLayout());
+        menu = new Menu(utilisateurConnecte, this);
+        menu.addMenuEvent(this);
+        zoneContenu = new JPanel(new BorderLayout(15, 15));
 
-        // ajoute les composants à la fenêtre
         add(menu, BorderLayout.WEST);
         add(zoneContenu, BorderLayout.CENTER);
 
-        menu.addMenuEvent((index, subIndex, action) -> {
-            menuSelected(index, subIndex, action);
-        });
-
+        afficherVueEnsemble();
     }
 
-   @Override
+    @Override
     public void menuSelected(int index, int subIndex, MenuAction action) {
 
         zoneContenu.removeAll();
 
         switch (index) {
-
-            case 0: // Vue d'ensemble
-                zoneContenu.add(new JLabel("Vue d'ensemble"));
+            case 0:
+                afficherVueEnsemble();
                 break;
 
-            case 1: // Réseau & Trafic
+            case 1:
                 if (subIndex == 1) {
-                    zoneContenu.add(new ReseauTrafic(dao, "Bus"), BorderLayout.CENTER);
+                    zoneContenu.add(new ReseauTrafic(ligneDAO, "Bus"));
                 } else if (subIndex == 2) {
-                    zoneContenu.add(new ReseauTrafic(dao, "Tram"), BorderLayout.CENTER);
+                    zoneContenu.add(new ReseauTrafic(ligneDAO, "Tram"));
                 }
                 break;
 
-            case 6: // Map
+            case 3: // Réseau & Borne
+                zoneContenu.add(new BornePanel());
+                break;
 
+            case 5:
+                Chauffeurs chauffeurs = new Chauffeurs(menu);
+
+                zoneContenu.add(chauffeurs, BorderLayout.CENTER);
+                break;
+
+            case 6:
+                Conduites conduites = new Conduites();
+
+                zoneContenu.add(conduites, BorderLayout.CENTER);
+                break;
+
+            case 7:
+                afficherMap();
+                break;
+
+            default:
+                zoneContenu.add(new JLabel("Vue d'ensemble"));
                 break;
         }
 
@@ -78,18 +95,117 @@ public class EcranFenetre extends JFrame implements MenuEvent {
         zoneContenu.repaint();
     }
 
-    public static void main(String[] args) {
+    private void afficherVueEnsemble() {
+        zoneContenu.add(new JLabel("Vue d'ensemble"));
+    }
+
+    private void afficherMap() {
+        Map map = new Map();
+
+        List<Arret> arrets;
+        List<Ligne> lignes;
         try {
-            FlatDarkLaf.setup();
-        } catch (Exception e) {
-            System.err.println("Échec au chargement du thème");
+            arrets = arretDAO.findAll();
+            lignes = ligneDAO.findAll();
+            for (Ligne l : lignes) {
+                l.setArretsDesservis(dessertDAO.getDessertesUneLigne(l.getIdLigne()));
+            }
+            map.afficherReseau(arrets, lignes);
+        } catch (DAOException e) {
+            throw new RuntimeException(e);
         }
 
-        // Lancement
-        SwingUtilities.invokeLater(() -> {
-            new EcranFenetre().setVisible(true);
+        // --- Menu flottant ---
+        JPanel menuPanel = new JPanel();
+        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+        menuPanel.setBackground(new Color(255, 255, 255, 160));
+        menuPanel.setOpaque(true);
+        menuPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+
+        // --- Radio "Toutes les lignes" ---
+        JRadioButton allLinesRadio = new JRadioButton("Toutes les lignes");
+        allLinesRadio.setForeground(Color.BLACK);
+        allLinesRadio.setBackground(new Color(255, 255, 255, 0));
+        allLinesRadio.setOpaque(false);
+        allLinesRadio.setFocusPainted(false);
+        allLinesRadio.setSelected(true);
+        menuPanel.add(allLinesRadio);
+
+        // --- Checkboxes pour chaque ligne ---
+        List<JCheckBox> ligneCheckBoxes = new ArrayList<>();
+        for (Ligne ligne : lignes) {
+            JCheckBox checkBox = new JCheckBox("Ligne " + ligne.getLibelle());
+            checkBox.setForeground(Color.BLACK);
+            checkBox.setBackground(new Color(255, 255, 255, 0));
+            checkBox.setOpaque(false);
+            checkBox.setFocusPainted(false);
+            menuPanel.add(checkBox);
+            ligneCheckBoxes.add(checkBox);
+
+            checkBox.addActionListener(e -> {
+                // Décoche le radio si au moins une checkbox est cochée
+                if (checkBox.isSelected()) {
+                    allLinesRadio.setSelected(false);
+                }
+
+                mettreAJourSelection(map, lignes, ligneCheckBoxes, allLinesRadio, arrets);
+            });
+        }
+
+        // Action radio "Toutes les lignes"
+        allLinesRadio.addActionListener(e -> {
+            if (allLinesRadio.isSelected()) {
+                // Décocher toutes les checkboxes
+                for (JCheckBox cb : ligneCheckBoxes) {
+                    cb.setSelected(false);
+                }
+                mettreAJourSelection(map, lignes, ligneCheckBoxes, allLinesRadio, arrets);
+            }
         });
 
+        // --- LayeredPane pour menu flottant ---
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setLayout(null);
+        map.setBounds(0, 0, zoneContenu.getWidth(), zoneContenu.getHeight());
+        layeredPane.add(map, JLayeredPane.DEFAULT_LAYER);
 
+        int menuWidth = 180;
+        int menuHeight = menuPanel.getPreferredSize().height;
+        menuPanel.setBounds(layeredPane.getWidth() - menuWidth - 10, 10, menuWidth, menuHeight);
+        layeredPane.add(menuPanel, JLayeredPane.PALETTE_LAYER);
+
+        // Gestion redimensionnement
+        layeredPane.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                map.setBounds(0, 0, layeredPane.getWidth(), layeredPane.getHeight());
+                menuPanel.setBounds(layeredPane.getWidth() - menuWidth - 10, 10, menuWidth, menuHeight);
+            }
+        });
+
+        zoneContenu.add(layeredPane, BorderLayout.CENTER);
+    }
+
+    private void mettreAJourSelection(Map map, List<Ligne> lignes,
+                                      List<JCheckBox> ligneCheckBoxes,
+                                      JRadioButton allLinesRadio,
+                                      List<Arret> arrets) {
+        List<Ligne> selectionnees = new ArrayList<>();
+        for (int i = 0; i < lignes.size(); i++) {
+            if (ligneCheckBoxes.get(i).isSelected()) {
+                selectionnees.add(lignes.get(i));
+            }
+        }
+
+        if (selectionnees.isEmpty()) {
+            allLinesRadio.setSelected(true);
+            map.setLignesSelectionnees(null); // toutes les lignes
+        } else {
+            map.setLignesSelectionnees(selectionnees);
+        }
+        map.afficherReseau(arrets, lignes);
     }
 }

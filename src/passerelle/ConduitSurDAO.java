@@ -434,7 +434,8 @@ public class ConduitSurDAO extends DAO<ConduitSur> {
                 if (rs.next()) hier = rs.getDouble(1);
             }
 
-            if (hier == 0) return "+0%"; // evite division par zéro
+            if (hier == 0 && aujourdhui == 0) return  "+0%"; // Aucune stats sur les deux derniers jours
+            else if (hier == 0) return "+100%"; // evite division par zéro
 
             //formule taux de croissance
             double evolution = ((aujourdhui - hier) / hier) * 100;

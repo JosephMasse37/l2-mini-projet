@@ -38,7 +38,9 @@ public class ConduitesAction {
         formatter.setMaximum(9999);
         formatter.setAllowsInvalid(false);
 
-        JFormattedTextField intField = new JFormattedTextField(formatter);
+        JFormattedTextField nbValidations = new JFormattedTextField(formatter);
+
+        nbValidations.setValue(cs.getNbValidation());
 
         // Construire le panneau pour la boîte de dialogue
         JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
@@ -50,7 +52,7 @@ public class ConduitesAction {
         ));
 
         panel.add(new JLabel("Nombre de validations :"));
-        panel.add(intField);
+        panel.add(nbValidations);
 
         int result = JOptionPane.showConfirmDialog(parentPanel, panel,
                 "Modifier la conduite",
@@ -59,22 +61,22 @@ public class ConduitesAction {
 
         if (result == JOptionPane.OK_OPTION) {
             // Récupérer les nouvelles valeurs
-            int nbValidations = (Integer) intField.getValue();
+            int newNbValidations = (Integer) nbValidations.getValue();
 
             // Appliquer les modifications
-            cs.setNbValidation(nbValidations);
+            cs.setNbValidation(newNbValidations);
 
             // Sauvegarder en base
             boolean r1 = conduitSurDAO.update(cs);
 
             if (r1) {
                 JOptionPane.showMessageDialog(parentPanel,
-                        "Le chauffeur a été modifié avec succès.",
+                        "La conduite a été modifiée avec succès.",
                         "Modification réussie",
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(parentPanel,
-                        "Le chauffeur n'a pas pu être modifié.",
+                        "La conduite n'a pas pu être modifiée.",
                         "Modification échouée",
                         JOptionPane.INFORMATION_MESSAGE);
             }
@@ -93,14 +95,14 @@ public class ConduitesAction {
         if (result) {
             JOptionPane.showMessageDialog(
                     parentPanel,
-                    "La conduite a été supprimé avec succès.",
+                    "La conduite a été supprimée avec succès.",
                     "Suppression réussie",
                     JOptionPane.INFORMATION_MESSAGE
             );
         } else {
             JOptionPane.showMessageDialog(
                     parentPanel,
-                    "La conduite n'a pas pu être supprimé.",
+                    "La conduite n'a pas pu être supprimée.",
                     "Suppression échouée",
                     JOptionPane.INFORMATION_MESSAGE
             );

@@ -28,6 +28,10 @@ public class ReseauTraficAction {
         duree.setValue(l.getDuree());
 
         // Couleur
+
+        // Couleur de base
+        String couleurHex = l.getCouleur();
+
         JTextField hexField = new JTextField(6);
         hexField.setEditable(false);
 
@@ -85,7 +89,9 @@ public class ReseauTraficAction {
         if (result == JOptionPane.OK_OPTION) {
             // Récupérer les nouvelles valeurs
             int newDuree = (Integer) duree.getValue();
-            String couleurHex = hexField.getText();
+            if (!hexField.getText().equals("")) {
+                couleurHex = hexField.getText();
+            }
 
             // Appliquer les modifications
             l.setDuree(newDuree);

@@ -302,7 +302,7 @@ public class ReseauTrafic extends JPanel {
             JLabel lblTitrePrincipal = new JLabel("Tickets Validés");
             lblTitrePrincipal.setForeground(Color.WHITE);
             lblTitrePrincipal.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            JLabel lblSousTitre = new JLabel("(Aujourd'hui)");
+            JLabel lblSousTitre = new JLabel("(Jusqu'à aujourd'hui)");
             lblSousTitre.setForeground(new Color(0x888888));
             lblSousTitre.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
@@ -317,12 +317,24 @@ public class ReseauTrafic extends JPanel {
             carteTickets.add(nbT, BorderLayout.CENTER);
 
             // Évolution
+            JPanel evolPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+            evolPanel.setOpaque(false);
+
+            JLabel lblEvol = new JLabel("Évolution des validations entre hier & aujourd'hui :");
+            lblEvol.setForeground(new Color(0x888888));
+            lblEvol.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+            lblEvol.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 20));
+
             String evolutionTexte = conduiteDAO.getEvolutionValidations(ligne.getIdLigne());
             JLabel evolT = new JLabel(evolutionTexte, SwingConstants.RIGHT);
             evolT.setFont(new Font("Segoe UI", Font.BOLD, 14));
             evolT.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 20));
             evolT.setForeground(evolutionTexte.startsWith("-") ? new Color(0xFF4444) : new Color(0x32CD32));
-            carteTickets.add(evolT, BorderLayout.SOUTH);
+
+            evolPanel.add(lblEvol);
+            evolPanel.add(evolT);
+
+            carteTickets.add(evolPanel, BorderLayout.SOUTH);
 
             // Liste arrets
             RoundedPanel carteArrets = new RoundedPanel(30);
