@@ -96,7 +96,10 @@ public class EcranFenetre extends JFrame implements MenuEvent {
     }
 
     private void afficherVueEnsemble() {
-        zoneContenu.add(new JLabel("Vue d'ensemble"));
+        zoneContenu.removeAll(); // On nettoie
+        zoneContenu.add(new LoireUrbanisme.VueEnsemble.VueEnsemble(), BorderLayout.CENTER);
+        zoneContenu.revalidate();
+        zoneContenu.repaint();
     }
 
     private void afficherMap() {
@@ -208,4 +211,5 @@ public class EcranFenetre extends JFrame implements MenuEvent {
         }
         map.afficherReseau(arrets, lignes);
     }
+
 }
