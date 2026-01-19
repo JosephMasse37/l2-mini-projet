@@ -184,17 +184,19 @@ import metiers.Borne;
             Map<String, String> stats = new HashMap<>();
 
             //  plus rentable (Celle qui a le plus gros nbVentesTickets)
-            String sqlBest = "SELECT idBorne, nbVentesTickets FROM borne ORDER BY nbVentesTickets DESC LIMIT 1";
+            String sqlBest = "SELECT idBorne, nbVentesTickets, idArret FROM borne ORDER BY nbVentesTickets DESC LIMIT 1";
 
             //  pire (Celle qui a le moins de nbVentesTickets)
-            String sqlPire = "SELECT idBorne, nbVentesTickets FROM borne ORDER BY nbVentesTickets ASC LIMIT 1";
+            String sqlPire = "SELECT idBorne, nbVentesTickets, idArret FROM borne ORDER BY nbVentesTickets ASC LIMIT 1";
 
             try (java.sql.Statement st = connexion.createStatement()) {
+
+                ArretDAO arretDAO = new ArretDAO(connexion);
 
                 //  pour la meilleure
                 try (ResultSet rs1 = st.executeQuery(sqlBest)) {
                     if (rs1.next()) {           // convert en string
-                        stats.put("best_id", String.valueOf(rs1.getInt("idBorne")));
+                        stats.put("best_id", String.valueOf(rs1.getInt("idBorne") + " à l'arrêt " + arretDAO.find(rs1.getInt("idArret")).getNom()));
                         stats.put("best_ventes", String.valueOf(rs1.getInt("nbVentesTickets")));
                     }
                 }
@@ -202,7 +204,7 @@ import metiers.Borne;
                 //  pour la pire
                 try (ResultSet rs2 = st.executeQuery(sqlPire)) {
                     if (rs2.next()) {
-                        stats.put("pire_id", String.valueOf(rs2.getInt("idBorne")));
+                        stats.put("pire_id", String.valueOf(rs2.getInt("idBorne") + " à l'arrêt " + arretDAO.find(rs2.getInt("idArret")).getNom()));
                         stats.put("pire_ventes", String.valueOf(rs2.getInt("nbVentesTickets")));
                     }
                 }

@@ -64,14 +64,18 @@ public class EcranFenetre extends JFrame implements MenuEvent {
 
             case 1:
                 if (subIndex == 1) {
-                    zoneContenu.add(new JLabel("Bus"));
+                    zoneContenu.add(new ReseauTrafic(ligneDAO, "Bus"));
                 } else if (subIndex == 2) {
-                    zoneContenu.add(new JLabel("Tram"));
+                    zoneContenu.add(new ReseauTrafic(ligneDAO, "Tram"));
                 }
                 break;
 
             case 2:
                 zoneContenu.add(new PanelClients(clientDAO), BorderLayout.CENTER);
+                break;
+
+            case 3:
+                zoneContenu.add(new BornePanel());
                 break;
 
             case 4:

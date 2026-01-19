@@ -125,14 +125,19 @@ public class VueEnsemble extends JPanel {
         //  LA MEILLEURE
         JPanel cardBest = new JPanel();
         cardBest.setLayout(new BoxLayout(cardBest, BoxLayout.Y_AXIS));
-        cardBest.setBackground(Color.WHITE);
-        cardBest.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        cardBest.setBackground(Color.BLACK);
+        cardBest.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.WHITE, 2, true), // bordure externe
+                        BorderFactory.createEmptyBorder(15, 15, 15, 15)       // marge interne (haut, gauche, bas, droite)
+                )
+        );
 
         JLabel tBest = new JLabel("Borne la plus rentable");
         tBest.setFont(new Font("Segoe UI", Font.BOLD, 14));
         tBest.setForeground(new Color(38, 166, 91)); // Vert
 
-        JLabel idBest = new JLabel("ID Borne : " + data.getOrDefault("best_id", "INDISPO"));
+        JLabel idBest = new JLabel("Borne n°" + data.getOrDefault("best_id", "INDISPO"));
         JLabel valBest = new JLabel(data.getOrDefault("best_ventes", "0") + " ventes");
         valBest.setFont(new Font("Segoe UI", Font.BOLD, 20));
 
@@ -146,14 +151,19 @@ public class VueEnsemble extends JPanel {
         // LA PIRE
         JPanel cardWorst = new JPanel();
         cardWorst.setLayout(new BoxLayout(cardWorst, BoxLayout.Y_AXIS));
-        cardWorst.setBackground(Color.WHITE);
-        cardWorst.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        cardWorst.setBackground(Color.BLACK);
+        cardWorst.setBorder(
+        BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.WHITE, 2, true), // bordure externe
+                BorderFactory.createEmptyBorder(15, 15, 15, 15)       // marge interne (haut, gauche, bas, droite)
+            )
+        );
 
         JLabel tWorst = new JLabel("Borne la moins rentable");
         tWorst.setFont(new Font("Segoe UI", Font.BOLD, 14));
         tWorst.setForeground(new Color(192, 57, 43)); // Rouge
 
-        JLabel idWorst = new JLabel("ID Borne : " + data.getOrDefault("pire_id", "N/A"));
+        JLabel idWorst = new JLabel("Borne n°" + data.getOrDefault("pire_id", "N/A"));
         JLabel valWorst = new JLabel(data.getOrDefault("pire_ventes", "0") + " ventes");
         valWorst.setFont(new Font("Segoe UI", Font.BOLD, 20));
 
