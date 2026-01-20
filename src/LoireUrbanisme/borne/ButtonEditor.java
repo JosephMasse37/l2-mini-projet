@@ -45,7 +45,7 @@ class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
 
             int response = JOptionPane.showConfirmDialog(
                     parentPanel, // parent pour centrer la boîte
-                    "Voulez-vous vraiment supprimer cette conduite ?",
+                    "Voulez-vous vraiment supprimer cette borne ?",
                     "Confirmation de suppression",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE

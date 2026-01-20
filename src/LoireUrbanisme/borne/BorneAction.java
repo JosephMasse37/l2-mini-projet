@@ -152,7 +152,7 @@ public class BorneAction {
         panel.add(nbVoyages);
 
         int result = JOptionPane.showConfirmDialog(parentPanel, panel,
-                "Modifier la conduite",
+                "Modifier la borne",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
 
